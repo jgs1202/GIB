@@ -270,11 +270,12 @@ function forceInABox(alpha) {
 
     function onEnd() {
         console.log(nodes)
+        console.log(nodes.map(function(d) { return [d.x, d.y] }))
         getCoo()
     }
 
     function getCoo() {
-        console.log(nodes[73])
+        // console.log(nodes[73])
         var max = 0
         for (let i = 0; i < nodes.length; i++) {
             if (nodes[i].group > max) {
@@ -284,7 +285,7 @@ function forceInABox(alpha) {
         for (let i = 0; i <= max; i++) {
             groups.push([])
         }
-        console.log(groups)
+        // console.log(groups)
         for (let i = 0; i < nodes.length; i++) {
             groups[nodes[i].group].push(i)
         }
@@ -299,50 +300,62 @@ function forceInABox(alpha) {
                 xmax = 0,
                 xmin = 0;
             for (let j = 0; j < groups[i].length; j++) {
+                // console.log(j)
                 if (j === 0) {
                     ymax = nodes[groups[i][j]].y
                     ymin = nodes[groups[i][j]].y
                     xmax = nodes[groups[i][j]].x
                     xmin = nodes[groups[i][j]].x
                 }
-                if (nodes[groups[i][j].y > ymax]) {
+                if (nodes[groups[i][j]].y > ymax) {
                     ymax = nodes[groups[i][j]].y
+                    // console.log('ymax')
                 }
-                if (nodes[groups[i][j].y < ymin]) {
+                if (nodes[groups[i][j]].y < ymin) {
                     ymin = nodes[groups[i][j]].y
+                    // console.log('ymin')
                 }
-                if (nodes[groups[i][j].x > ymax]) {
+                if (nodes[groups[i][j]].x > xmax) {
                     xmax = nodes[groups[i][j]].x
+                    // console.log('xmax')
                 }
-                if (nodes[groups[i][j].x < ymin]) {
+                if (nodes[groups[i][j]].x < xmin) {
                     xmin = nodes[groups[i][j]].x
+                    // console.log('xmin')
+                }
+                if (i === 0) {
+                    console.log(nodes[groups[i][j]])
+                    // console.log(xmax)
                 }
             }
             boxes.push([ymin, ymax, xmin, xmax])
         }
-        console.log(boxes)
+        // console.log(boxes)
 
         data.nodes = nodes
         data.boxes = boxes
-        console.log(boxes)
-        console.log(typeof data.nodes)
-        console.log(data.nodes)
-        let coo = [ { "x": 251-10,   "y": 313-10},  { "x": 251-10,  "y": 313+10},
-                 { "x": 251+10,  "y": 313+10} , { "x": 251+10,  "y": 313-10}, { "x": 251-10,   "y": 313-10}]
-        console.log('coo is ' + ''  +coo)
-        var lineFunc = d3.line()
-            .x(function(d) { return d.x; })
-            .y(function(d) { return d.y; });
-        console.log(svg)
-        svg.append('path')
-            .attr('d', lineFunc(coo))
-            .attr('stroke', 'red')
-            .attr('stroke-width', 2)
-            .attr('fill', 'none')
+        // console.log(boxes)
+        // console.log(typeof data.nodes)
+        // console.log(data.nodes)
+        for (let i = 0; i < data.boxes.length; i++) {
+            let coo = [{ "x": data.boxes[i][2] - 10, "y": data.boxes[i][0] - 10 }, { "x": data.boxes[i][2] - 10, "y": data.boxes[i][1] + 10 },
+                { "x": data.boxes[i][3] + 10, "y": data.boxes[i][1] + 10 }, { "x": data.boxes[i][3] + 10, "y": data.boxes[i][0] - 10 }, { "x": data.boxes[i][2] - 10, "y": data.boxes[i][0] - 10 }
+            ]
+            console.log('coo is ' + '' + coo)
+            var lineFunc = d3.line()
+                .x(function(d) { return d.x; })
+                .y(function(d) { return d.y; });
+            console.log(svg)
+            svg.append('path')
+                .attr('d', lineFunc(coo))
+                .attr('stroke', 'black')
+                .attr('stroke-width', 1)
+                .attr('fill', 'none')
+        }
 
         downloadFile(data.nodes, 'nodes', 'json')
         downloadFile(tableToCsvString(data.boxes), 'boxes', 'csv')
-
+        console.log(nodes)
     }
 
 
@@ -529,7 +542,7 @@ function downloadFile(data, name, type) {
     } else if (type === 'csv') {
         blob = new Blob([bom, data], { type: "text/csv" });
         // blob = new Blob([bom, data], { type: "text/csv" })
-        console.log(data)
+        // console.log(data)
         a.download = name + '.csv'
         console.log('csv')
     } else {
