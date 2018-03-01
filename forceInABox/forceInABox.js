@@ -334,6 +334,12 @@ function forceInABox(alpha) {
 
         data.nodes = nodes
         data.boxes = boxes
+        // d3.selectAll("path.line").remove();
+        console.log('links are ')
+        console.log(links)
+        for (let i=0; i<data.boxes.length; i++){
+          d3.select('#' + '' + i).remove()
+        }
         // console.log(boxes)
         // console.log(typeof data.nodes)
         // console.log(data.nodes)
@@ -341,16 +347,17 @@ function forceInABox(alpha) {
             let coo = [{ "x": data.boxes[i][2] - 10, "y": data.boxes[i][0] - 10 }, { "x": data.boxes[i][2] - 10, "y": data.boxes[i][1] + 10 },
                 { "x": data.boxes[i][3] + 10, "y": data.boxes[i][1] + 10 }, { "x": data.boxes[i][3] + 10, "y": data.boxes[i][0] - 10 }, { "x": data.boxes[i][2] - 10, "y": data.boxes[i][0] - 10 }
             ]
-            console.log('coo is ' + '' + coo)
+            // console.log('coo is ' + '' + coo)
             var lineFunc = d3.line()
                 .x(function(d) { return d.x; })
                 .y(function(d) { return d.y; });
-            console.log(svg)
+            // console.log(svg)
             svg.append('path')
                 .attr('d', lineFunc(coo))
                 .attr('stroke', 'black')
                 .attr('stroke-width', 1)
                 .attr('fill', 'none')
+                .attr('id', i)
         }
 
         downloadFile(data.nodes, 'nodes', 'json')
