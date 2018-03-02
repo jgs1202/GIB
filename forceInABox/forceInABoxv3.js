@@ -326,7 +326,7 @@ d3.layout.forceInABox = function () {
     if (showingTemplate && template === "force") {
       templateNodesSel = container.selectAll("cell")
       .data(templateNodes);
-      templateNodesSel
+      templateSel
         .attr("cx", function (d) { return d.x; })
         .attr("cy", function (d) { return d.y; })
         .attr("r", function (d) { return d.size; });
