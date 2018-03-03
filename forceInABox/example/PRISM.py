@@ -9,23 +9,19 @@ def makeData(center, links, boxes):
     reader1 = csv.reader(f)
     for i in reader1:
         boxes.append(i)
-    print(boxes)
 
     linkWeights = []
     f = open('link_boxes.csv', 'r')
     reader2 = csv.reader(f)
     for i in reader2:
         linkWeights.append(i)
-    print(linkWeights)
 
-    # center = [] # cx, cy, dirx, diry
     lengthBox = len(boxes)
     for i in range(lengthBox):
         dirx = ( float(boxes[i][3]) - float(boxes[i][2]) )/2
         diry = ( float(boxes[i][1]) - float(boxes[i][0])) /2
         center.append( [ float(boxes[i][2]) + dirx , float(boxes[i][0]) + diry, dirx, diry])
 
-    # links = []
     num1 = len(linkWeights)
     for i in range(num1):
         num2 = len(linkWeights[i])
@@ -35,6 +31,27 @@ def makeData(center, links, boxes):
                 dic['node1'] = i
                 dic['node2'] = j
                 links.append(dic)
+
+def checkOverlap(center, links, boxes):
+    t = []
+    lengh = len(boxes)
+    for i in range(length):
+        t.append(1)
+    length = len(links)
+    for i in range(links):
+        xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] ) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
+        yover = ( center[links[i]['node1']][3] + center[links[i]['node2']][3] ) / ( abs( center[links[i]['node1']][1] - center[links[i]['node2']][1]) )
+        if xover < yover:
+            which = xover
+        else:
+            which = yover
+        if which > 1:
+            t[i] = which
+        else:
+            t[i] = 1
+        if t[i] > 1.5:
+            t[i] = 1.5
+
 
 if __name__ == '__main__':
     center = [], links = [], boxes=[]
