@@ -324,7 +324,7 @@ function forceInABox(alpha) {
           // console.log('xmin')
         }
         if (i === 0) {
-          console.log(nodes[groups[i][j]])
+          // console.log(nodes[groups[i][j]])
           // console.log(xmax)
         }
       }
@@ -335,29 +335,73 @@ function forceInABox(alpha) {
     data.nodes = nodes
     data.boxes = boxes
     // d3.selectAll("path.line").remove();
-    console.log('links are ')
-    console.log(links)
+    // console.log('links are ')
+    // console.log(links)
     // for (let i=0; i<data.boxes.length; i++){
     //   d3.select('#' + '' + i).remove()
     // }
-    // console.log(boxes)
+    console.log(boxes)
     // console.log(typeof data.nodes)
     // console.log(data.nodes)
+
+    //calc unit area
+    let area = []
+    for (let i=0; i < data.boxes.length; i++){
+      let unit = ( data.boxes[i][1] + 5 - data.boxes[i][0] + 5 ) * ( data.boxes[i][3] + 5 - data.boxes[i][2] + 5 )
+      area.push(unit / groups[i].length)
+      // console.log(unit)
+    }
+    let max =area[0]
+    for( let i=0; i<data.boxes.length; i++){
+      if ( area[i] > max){
+        max = area[i]
+      }
+    }
+    console.log(max, area)
+    for (let i=0; i<area.length; i++){
+      if (area[i] === max){
+        data.boxes[i][0] -= 5
+        data.boxes[i][1] += 5
+        data.boxes[i][2] -= 5
+        data.boxes[i][3] += 5
+      }
+      else if (area[i] != max){
+        let groupSize = max * groups[i].length
+        let verify = 0
+        let step = 5
+        while( verify == 0 ){
+          let heightStep = groupSize / ( data.boxes[i][3] - data.boxes[i][2] + 2 * step )
+          if ( heightStep <= ( data.boxes[i][1] - data.boxes[i][0] + 2 * (step + 3) ) ) {
+            data.boxes[i][2] -= step
+            data.boxes[i][3] += step
+            let pre0 = data.boxes[i][0]
+            let pre1 = data.boxes[i][1]
+            data.boxes[i][0] = pre0 - (heightStep - ( pre1 - pre0 )) /2
+            data.boxes[i][1] = pre1 + (heightStep - ( pre1 - pre0 )) /2
+            verify = 1
+          }
+          step += 1
+        }
+      }
+    }
+
+
     for (let i = 0; i < data.boxes.length; i++) {
-      let coo = [{ "x": data.boxes[i][2] - 10, "y": data.boxes[i][0] - 10 }, { "x": data.boxes[i][2] - 10, "y": data.boxes[i][1] + 10 },
-        { "x": data.boxes[i][3] + 10, "y": data.boxes[i][1] + 10 }, { "x": data.boxes[i][3] + 10, "y": data.boxes[i][0] - 10 }, { "x": data.boxes[i][2] - 10, "y": data.boxes[i][0] - 10 }
-      ]
-      // console.log('coo is ' + '' + coo)
+      // let coo = [{ "x": data.boxes[i][2] - 15, "y": data.boxes[i][0] - 15 }, { "x": data.boxes[i][2] - 15, "y": data.boxes[i][1] + 15 },
+      //   { "x": data.boxes[i][3] + 15, "y": data.boxes[i][1] + 15 }, { "x": data.boxes[i][3] + 15, "y": data.boxes[i][0] - 15 }, { "x": data.boxes[i][2] - 15, "y": data.boxes[i][0] - 15 }]
+      let coo = [{ "x": data.boxes[i][2] , "y": data.boxes[i][0]  }, { "x": data.boxes[i][2] , "y": data.boxes[i][1]  },
+        { "x": data.boxes[i][3] , "y": data.boxes[i][1]  }, { "x": data.boxes[i][3] , "y": data.boxes[i][0]  }, { "x": data.boxes[i][2] , "y": data.boxes[i][0]  }]
+      console.log('coo is ' + '' + coo[0]['x'])
       var lineFunc = d3.line()
         .x(function(d) { return d.x; })
         .y(function(d) { return d.y; });
       // console.log(svg)
-      svg.append('path.line')
+      svg.append('path')
         .attr('d', lineFunc(coo))
         .attr('stroke', 'black')
         .attr('stroke-width', 1)
         .attr('fill', 'none')
-        .attr('id', i)
+        // .attr('id', i)
     }
 
     downloadFile(data.nodes, 'nodes', 'json')
@@ -365,9 +409,9 @@ function forceInABox(alpha) {
     downloadFile(tableToCsvString(data.boxes), 'boxes', 'csv')
     console.log('reload is ' + stopVar)
 
-    if (stopVar != 1) {
-      reload ()
-    }
+    // if (stopVar != 1) {
+    //   reload ()
+    // }
   }
 
 
@@ -535,7 +579,7 @@ var tableToCsvString = function(table) {
     }
     str += '\n';
   }
-  console.log(str)
+  // console.log(str)
   return str;
 };
 

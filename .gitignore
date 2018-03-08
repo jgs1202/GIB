@@ -1,3 +1,6 @@
 /2017gib-reordering/
 *.csv
 *.json
+rust-fd-layout/target/
+**/*.rs.bk
+rust-fd-layout/Cargo.lock
