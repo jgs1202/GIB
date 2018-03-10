@@ -17,10 +17,7 @@ def readjson():
     links = json.load(reader)
 
     length = len(links)
-    print(len(nodes))
     total = 0
-
-    print(links)
 
     for i in range(length):
         sx1 = nodes[ links[i]['source']['index'] ]['x']
@@ -29,7 +26,7 @@ def readjson():
         ty1 = nodes[ links[i]['target']['index'] ]['y']
         index1 = links[i]['source']['index']
         index2 = links[i]['target']['index']
-        print('i = ' + str(i))
+        # print('i = ' + str(i))
 
         for j in range (length - i - 1):
             sx2 = nodes[ links[i+j+1]['source']['index'] ]['x']
@@ -40,7 +37,7 @@ def readjson():
             index4 = links[i+j+1]['target']['index']
 
             # print(i, j)
-            print('j is ' + str(i+j+1))
+            # print('j is ' + str(i+j+1))
 
 
             try:
@@ -60,21 +57,17 @@ def readjson():
                     y = tan1 * (x - sx1) + sy1
 
                 # print( (sx1 - x)*(tx1 - x) , (sx2 - x)*(tx2 - x) , (sy1 - y)*(ty1 - y) , (sy2 - y)*(ty2 - y) )
-                print(x,y)
+                # print(x,y)
 
                 # if intersection point is same as either of source or target we do not count
                 if [x,y] == [sx1, sy1] or [x,y] == [sx2, sy2] or [x,y] == [tx1, ty1] or [x,y] == [tx2, ty2]:
-                    print('same')
-
+                    pass
                 else :
-                        if (sx1 - x)*(tx1 - x) <= 0 and (sx2 - x)*(tx2 - x) <= 0 and (sy1 - y)*(ty1 - y) <= 0 and (sy2 - y)*(ty2 - y) <= 0:
-                            total += 1
-                            print('add')
+                    if (sx1 - x)*(tx1 - x) <= 0 and (sx2 - x)*(tx2 - x) <= 0 and (sy1 - y)*(ty1 - y) <= 0 and (sy2 - y)*(ty2 - y) <= 0:
+                        total += 1
 
             except:
                 pass
-
-    print(total)
 
     # print(len(links))
     import numpy as np
@@ -97,4 +90,4 @@ def readjson():
 
 
 if __name__ == '__main__':
-    print(readjson())
+    print( 'The number of crissing is ' + str(readjson()) )
