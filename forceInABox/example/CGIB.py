@@ -9,9 +9,11 @@ import csv
 import copy
 import sys
 
-def readjson(nodes, groups):
-    reader = open('nodes.json', 'r')
+def readjson(nodes, groups, links):
+    reader = open('data/data.json', 'r')
     nodes= json.load(reader)
+    links = nodes['links']
+    nodes = nodes['nodes']
     length = len(nodes)
 
     maxGroup = 0
@@ -25,8 +27,8 @@ def readjson(nodes, groups):
     for i in range(length):
         dic = {}
         dic['number'] = i
-        dic['x'] = nodes[i]['x']
-        dic['y'] = nodes[i]['y']
+        # dic['x'] = nodes[i]['x']
+        # dic['y'] = nodes[i]['y']
         groups[nodes[i]['group']].append(dic)
     # print(groups)
 
@@ -45,7 +47,7 @@ def calcSize(groups, width, height, groupSize):
     groupSize.sort(key=itemgetter('size'), reverse = True )
     # print(groupSize)
 
-def croissant(groups, width, height, groupSize, center):
+def croissant(groups, width, height, groupSize, center, nodes, links):
 
     length = len(groups)
     verify = 0
@@ -62,6 +64,7 @@ def croissant(groups, width, height, groupSize, center):
         sequence = 0
         CorD = 0
         while(verify == 0) and CorD < length * 10:
+            print(i)
             if i == 0:
                 w = width * math.sqrt(GS[i]['size'])
                 h = height * math.sqrt(GS[i]['size'])
@@ -76,7 +79,7 @@ def croissant(groups, width, height, groupSize, center):
                 h = height - h2LT[1]
                 w = width * height * GS[i]['size'] / h
                 if max([w/h, h/w]) < 100:
-                    if h2LT[0] + w > width/2 + center[0][3]:
+                    if h2LT[0] + w > width:#/2 + center[0][3]:
                         sequence += 1
                         GS.insert(i,'dummy')
                         print('case1')
@@ -109,13 +112,13 @@ def croissant(groups, width, height, groupSize, center):
                 w = width - v2LT[0]
                 h = width * height * GS[i]['size'] / w
                 if max([w/h, h/w]) < 100:
-                    if v2LT[1] + h > height - h2LT[1]:
+                    if v2LT[1] + h > height - center[0][1]:
                         GS.insert(i,'dummy')
                         sequence += 1
                         print('case1')
                     else:
-                        v2LT[1] = v2LT[1] + h
                         center.append( [ GS[i]['index'], v2LT[0] + w/2 , v2LT[1] + h/2, w/2, h/2 ] )
+                        v2LT[1] = v2LT[1] + h
                         print('case2')
                 else:
                     GS.insert(i, 'dummy')
@@ -140,8 +143,10 @@ def croissant(groups, width, height, groupSize, center):
     # print(center)
     print(num)
 
+
+    print(len(center))
     center.sort(key=itemgetter(0))
-    print(center)
+    # print(center)
 
     length = len(center)
     data = []
@@ -153,17 +158,47 @@ def croissant(groups, width, height, groupSize, center):
         for i in data:
             writer.writerow(i)
 
+    groupCoo = []
+    for i in center:
+        dic = {}
+        dic['x'] = i[1] - i[3]
+        dic['y'] = i[2] - i[4]
+        dic['dx'] = i[3]*2
+        dic['dy'] = i[4]*2
+        groupCoo.append(dic)
+    dic = {}
+    dic['x'] = 0
+    dic['y'] = 0
+    dic['dx'] = width
+    dic['dy'] = height
+    groupCoo.append(dic)
+
+
+    reader = open('data/data.json', 'r')
+    nodes= json.load(reader)
+    links = nodes['links']
+    nodes = nodes['nodes']
+
+    forWrite = {}
+    forWrite['nodes'] = nodes
+    forWrite['links'] = links
+    forWrite['groups'] = groupCoo
+
+    f = open('data/data_CGIB.json', 'w')
+    json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+
 
 if __name__ == '__main__':
     nodes = []
     groups = []
     groupSize = []
     center = []
+    links = []
     width = 900
     height = 600
-    readjson(nodes, groups)
+    readjson(nodes, groups, links)
     calcSize(groups, width, height, groupSize)
-    croissant(groups, width, height, groupSize, center)
+    croissant(groups, width, height, groupSize, center, nodes, links)
     print(groupSize)
 
     import pylab as pl
