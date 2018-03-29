@@ -66,7 +66,7 @@
     .force("x", d3.forceX(width / 2).strength(0.05))
     .force("y", d3.forceY(height / 2).strength(0.05));
 
-    d3.json("miserables.json", function(error, graph) {
+    d3.json("PRISM_data.json", function(error, graph) {
       var groupingForce = forceInABox()
         .strength(0.1) // Strength to foci
         .template(template) // Either treemap or force

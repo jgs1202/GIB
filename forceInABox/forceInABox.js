@@ -419,10 +419,10 @@ function forceInABox(alpha) {
         .attr('fill', 'none')
       // .attr('id', i)
     }
-
-    // downloadFile(data.nodes, 'nodes', 'json')
+    data.links = links
+    downloadFile(data, 'data', 'json')
     // downloadFile(links, 'links', 'json')
-    // downloadFile(tableToCsvString(data.boxes), 'boxes', 'csv')
+    downloadFile(tableToCsvString(data.boxes), 'boxes', 'csv')
     console.log('reload is ' + stopVar)
 
     // if (stopVar != 1) {
@@ -588,7 +588,7 @@ var tableToCsvString = function(table) {
     for (var j = 0, jmax = row.length - 1; j <= jmax; ++j) {
       str += '"' + row[j] + '"';
       // str += '"' + row[j].replace('"', '""') + '"';
-      // str += 
+      // str +=
       if (j !== jmax) {
         str += ',';
       }
@@ -640,8 +640,8 @@ function downloadFile(data, name, type) {
     // for Safari
     window.open('data:' + mimeType + ';base64,' + window.Base64.encode(content), '_blank');
   }
-  // if (window.navigator.msSaveBlob) { 
-  //   window.navigator.msSaveBlob(blob, "test.txt"); 
+  // if (window.navigator.msSaveBlob) {
+  //   window.navigator.msSaveBlob(blob, "test.txt");
 
   //   // msSaveOrOpenBlobの場合はファイルを保存せずに開ける
   //   window.navigator.msSaveOrOpenBlob(blob, "test.txt");

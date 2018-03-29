@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def makeData(center, links, boxes):
-    f = open('boxes.csv', 'r')
+    f = open('data/FDGIB/boxes.csv', 'r')
     reader1 = csv.reader(f)
     for i in reader1:
         boxes.append(i)
@@ -18,7 +18,7 @@ def makeData(center, links, boxes):
     # print(boxes)
 
     linkWeights = []
-    f = open('link_boxes.csv', 'r')
+    f = open('data/FDGIB/link_boxes.csv', 'r')
     reader2 = csv.reader(f)
     for i in reader2:
         linkWeights.append(i)
@@ -261,10 +261,10 @@ def checkAll(center, boxes):
         print('the number of t is ' + str(t.count(1.0)))
         num += 1
 
-    with open('PRISM_boxes.csv', 'w') as f:
-        writer = csv.writer(f)
-        for i in center:
-            writer.writerow(i)
+    # with open('PRISM_boxes.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     for i in center:
+    #         writer.writerow(i)
     length1 = len(center)
     dif = []
     for i in range(length1):
@@ -274,16 +274,26 @@ def checkAll(center, boxes):
         for j in range(length2) :
             dif[i].append( center[i][j] - oldcenter[i][j] )
 
-    reader = open('nodes.json', 'r')
-    nodes= json.load(reader)
-    length = len(nodes)
+    reader = open('data/FDGIB/data.json', 'r')
+    data= json.load(reader)
+    length = len(data['nodes'])
     for i in range(length):
         for j in range(2):
-            nodes[i]['x'] += dif[ nodes[i]['group'] ][0]
-            nodes[i]['y'] += dif[ nodes[i]['group'] ][1]
+            data['nodes'][i]['x'] += dif[ data['nodes'][i]['group'] ][0]
+            data['nodes'][i]['y'] += dif[ data['nodes'][i]['group'] ][1]
 
-    f = open('PRISM_nodes.json', 'w')
-    json.dump(nodes, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+    boxesCoo = []
+    for i in center:
+        dic = {}
+        dic['x'] = i[0]-i[2]
+        dic['y'] = i[1]-i[3]
+        dic['dx'] = i[2]*2
+        dic['dy'] = i[3]*2
+        boxesCoo.append(dic)
+    data['boxes'] = boxesCoo
+
+    f = open('data/FDGIB/PRISM.json', 'w')
+    json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 
 
