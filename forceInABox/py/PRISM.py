@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def makeData(center, links, boxes):
-    f = open('data/FDGIB/boxes.csv', 'r')
+    f = open('../data/FDGIB/boxes.csv', 'r')
     reader1 = csv.reader(f)
     for i in reader1:
         boxes.append(i)
@@ -18,7 +18,7 @@ def makeData(center, links, boxes):
     # print(boxes)
 
     linkWeights = []
-    f = open('data/FDGIB/link_boxes.csv', 'r')
+    f = open('../data/FDGIB/link_boxes.csv', 'r')
     reader2 = csv.reader(f)
     for i in reader2:
         linkWeights.append(i)
@@ -274,7 +274,7 @@ def checkAll(center, boxes):
         for j in range(length2) :
             dif[i].append( center[i][j] - oldcenter[i][j] )
 
-    reader = open('data/FDGIB/data.json', 'r')
+    reader = open('../data/FDGIB/data.json', 'r')
     data= json.load(reader)
     length = len(data['nodes'])
     for i in range(length):
@@ -290,9 +290,9 @@ def checkAll(center, boxes):
         dic['dx'] = i[2]*2
         dic['dy'] = i[3]*2
         boxesCoo.append(dic)
-    data['boxes'] = boxesCoo
+    data['groups'] = boxesCoo
 
-    f = open('data/FDGIB/PRISM.json', 'w')
+    f = open('../data/FDGIB/PRISM.json', 'w')
     json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 

@@ -6,7 +6,7 @@ import json
 
 def test():
 	boxes = []
-	f = open('data/FDGIB/boxes.csv', 'r')
+	f = open('../data/FDGIB/boxes.csv', 'r')
 	reader1 = csv.reader(f)
 	for i in reader1:
 		boxes.append(i)
@@ -20,7 +20,7 @@ def test():
 			linkNum[i].append(0)
 	print(linkNum)
 
-	reader2 = open('data/FDGIB/data.json', 'r')
+	reader2 = open('../data/FDGIB/data.json', 'r')
 	data= json.load(reader2)
 	links = data['links']
 	# print(links)
@@ -54,7 +54,7 @@ def test():
 			linkNum[i][j] /= max
 	print(linkNum)
 
-	with open('data/FDGIB/link_boxes.csv', 'w') as f:
+	with open('../data/FDGIB/link_boxes.csv', 'w') as f:
 		writer = csv.writer(f) # 改行コード（\n）を指定しておく
 		for i in linkNum:
 			writer.writerow(i)

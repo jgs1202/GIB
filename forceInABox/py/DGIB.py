@@ -10,9 +10,9 @@ import copy
 import sys
 
 def readjson(nodes, groups):
-    reader = open('data/data.json', 'r')
-    nodes= json.load(reader)
-    nodes = nodes['nodes']
+    reader = open('../data/origin/data.json', 'r')
+    data = json.load(reader)
+    nodes = data['nodes']
     length = len(nodes)
 
     maxGroup = 0
@@ -167,10 +167,10 @@ def dougnut(groups, width, height, groupSize, center):
     for i in range(length):
         data.append( center[1:] )
 
-    with open('DGIB_boxes.csv', 'w') as f:
-        writer = csv.writer(f)
-        for i in data:
-            writer.writerow(i)
+    # with open('DGIB_boxes.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     for i in data:
+    #         writer.writerow(i)
 
     groupCoo = []
     for i in center:
@@ -188,17 +188,17 @@ def dougnut(groups, width, height, groupSize, center):
     groupCoo.append(dic)
 
 
-    reader = open('data/data.json', 'r')
-    nodes= json.load(reader)
-    links = nodes['links']
-    nodes = nodes['nodes']
+    reader = open('../data/origin/data.json', 'r')
+    data = json.load(reader)
+    links = data['links']
+    nodes = data['nodes']
 
     forWrite = {}
     forWrite['nodes'] = nodes
     forWrite['links'] = links
     forWrite['groups'] = groupCoo
 
-    f = open('data/data_DGIB.json', 'w')
+    f = open('../data/DGIB/data_DGIB.json', 'w')
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 

@@ -7,13 +7,14 @@ from operator import itemgetter
 import math
 import csv
 import copy
+import os
 import sys
 
 def readjson(nodes, groups, links):
-    reader = open('data/data.json', 'r')
-    nodes= json.load(reader)
-    links = nodes['links']
-    nodes = nodes['nodes']
+    reader = open(path, 'r')
+    data = json.load(reader)
+    links = data['links']
+    nodes = data['nodes']
     length = len(nodes)
 
     maxGroup = 0
@@ -153,10 +154,10 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
     for i in range(length):
         data.append( center[1:] )
 
-    with open('CGIB_boxes.csv', 'w') as f:
-        writer = csv.writer(f)
-        for i in data:
-            writer.writerow(i)
+    # with open('../data/CGIB/CGIB_boxes.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     for i in data:
+    #         writer.writerow(i)
 
     groupCoo = []
     for i in center:
@@ -174,32 +175,48 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
     groupCoo.append(dic)
 
 
-    reader = open('data/data.json', 'r')
-    nodes= json.load(reader)
-    links = nodes['links']
-    nodes = nodes['nodes']
+    reader = open(path, 'r')
+    data = json.load(reader)
+    links = data['links']
+    nodes = data['nodes']
 
     forWrite = {}
     forWrite['nodes'] = nodes
     forWrite['links'] = links
     forWrite['groups'] = groupCoo
 
-    f = open('data/data_CGIB.json', 'w')
+    try:
+        verify = os.listdir('../data/CGIB/' + dir)
+    except:
+        os.mkdir('../data/CGIB/' + dir)
+    f = open('../data/CGIB/' + dir + '/' + file, 'w')
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 
 if __name__ == '__main__':
-    nodes = []
-    groups = []
-    groupSize = []
-    center = []
-    links = []
-    width = 900
-    height = 600
-    readjson(nodes, groups, links)
-    calcSize(groups, width, height, groupSize)
-    croissant(groups, width, height, groupSize, center, nodes, links)
-    print(groupSize)
+    main = '../data/origin/'
+    global dir
+    for dir in os.listdir(main):
+        if (dir != '.DS_Store'):
+            try:
+                global file
+                for file in os.listdir(main + dir):
+                    print(file)
+                    if (dir != '.DS_Store'):
+                        global path
+                        path = main + dir + '/' + file
+                        nodes = []
+                        groups = []
+                        groupSize = []
+                        center = []
+                        links = []
+                        width = 900
+                        height = 600
+                        readjson(nodes, groups, links)
+                        calcSize(groups, width, height, groupSize)
+                        croissant(groups, width, height, groupSize, center, nodes, links)
+            except:
+                pass
 
     import pylab as pl
     pl.xticks([0, width])

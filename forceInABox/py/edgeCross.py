@@ -9,12 +9,13 @@ import csv
 import copy
 import sys
 
-def readjson():
-    reader = open('nodes.json', 'r')
-    nodes= json.load(reader)
+def edgeCross():
+    reader = open('../data/FDGIB/PRISM.json', 'r')
+    global data
+    data = json.load(reader)
 
-    reader = open('links.json', 'r')
-    links = json.load(reader)
+    nodes = data['nodes']
+    links = data['links']
 
     length = len(links)
     total = 0
@@ -72,6 +73,7 @@ def readjson():
     # print(len(links))
     import numpy as np
     import matplotlib.pyplot as plt
+    plt.gca().invert_yaxis()
     for i in links:
         # print(i['source']['index'], i['target']['index'])
         plt.plot([ nodes[ i['source']['index']] ['x'], nodes[i['target']['index']] ['x'] ],  [ nodes[ i['source']['index']] ['y'], nodes[i['target']['index']] ['y']  ], 'k-')
@@ -85,9 +87,36 @@ def readjson():
     plt.show()
     return total
 
+def aspect():
+    global boxes
+    boxes = data['groups']
 
+    mean = 0
+    for i in boxes:
+        as1 = i['dx']/i['dy']
+        as2 = i['dy']/i['dx']
+        aspect = max([as1, as2])
+        mean += aspect
 
+    return mean / len(boxes)
+
+def spaceWasted():
+    minx = boxes[0]['x']
+    maxx = minx + boxes[0]['dx']
+    miny = boxes[0]['y']
+    maxy = miny + boxes[0]['dy']
+    area = 0
+    for i in boxes:
+        area += i['dx'] * i['dy']
+        minx = min([minx, i['x']])
+        maxx = max([maxx, i['x'] + i['dx']])
+        miny = min([miny, i['y']])
+        maxy = max([maxy, i['y'] + i['dy']])
+    total = (maxx - minx)*(maxy - miny)
+    return area / total
 
 
 if __name__ == '__main__':
-    print( 'The number of crissing is ' + str(readjson()) )
+    print( 'The number of crossing is ' + str(edgeCross()) )
+    print('Mean aspect ratio is ' + str(aspect() ) )
+    print('Mean space wasted is ' + str(spaceWasted()))
