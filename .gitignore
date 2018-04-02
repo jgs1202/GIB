@@ -4,3 +4,4 @@
 rust-fd-layout/target/
 **/*.rs.bk
 rust-fd-layout/Cargo.lock
+*.txt
