@@ -53,11 +53,11 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
     length = len(groups)
     verify = 0
     num = 0
-    print(length)
+    # print(length)
     while ( verify == 0 and num < 10):
         GS = copy.deepcopy( groupSize )
-        print(num)
-        print(GS[0])
+        # print(num)
+        # print(GS[0])
         lengthC = len(center)
         for i in range(lengthC):
             del center[0]
@@ -65,7 +65,7 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
         sequence = 0
         CorD = 0
         while(verify == 0) and CorD < length * 10:
-            print(i)
+            # print(i)
             if i == 0:
                 w = width * math.sqrt(GS[i]['size'])
                 h = height * math.sqrt(GS[i]['size'])
@@ -73,57 +73,57 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
                 v1RT = [width/2 - w/2, 0]
                 v2LT = [width/2 + w/2, 0]
                 h2LT = [width/2 - w/2, h]
-                print('first')
+                # print('first')
 
             elif i%3 == 1:
-                print('second')
+                # print('second')
                 h = height - h2LT[1]
                 w = width * height * GS[i]['size'] / h
                 if max([w/h, h/w]) < 100:
                     if h2LT[0] + w > width:#/2 + center[0][3]:
                         sequence += 1
                         GS.insert(i,'dummy')
-                        print('case1')
+                        # print('case1')
                     else:
                         center.append( [ GS[i]['index'], h2LT[0] + w/2, h2LT[1] + h/2, w/2, h/2 ])
                         h2LT[0] = h2LT[0] + w
                         sequence = 0
-                        print('case2')
+                        # print('case2')
                 else:
                     GS.insert(i,'dummy')
-                    print('case3')
+                    # print('case3')
             elif i%3 == 2:
-                print('third')
+                # print('third')
                 w = v1RT[0]
                 h = width * height * GS[i]['size'] / w
                 if max([w/h, h/w]) < 100:
                     if v1RT[1] + h > height:
                         GS.insert(i,'dummy')
                         sequence += 1
-                        print('case1')
+                        # print('case1')
                     else:
                         center.append( [ GS[i]['index'], 0 + w/2, v1RT[1] + h/2, w/2, h/2 ] )
                         v1RT[1] = v1RT[1] + h
-                        print('case2')
+                        # print('case2')
                 else:
                     GS.insert(i, 'dummy')
-                    print('case3')
+                    # print('case3')
             elif i%3 == 0:
-                print('fourth')
+                # print('fourth')
                 w = width - v2LT[0]
                 h = width * height * GS[i]['size'] / w
                 if max([w/h, h/w]) < 100:
                     if v2LT[1] + h > height - center[0][1]:
                         GS.insert(i,'dummy')
                         sequence += 1
-                        print('case1')
+                        # print('case1')
                     else:
                         center.append( [ GS[i]['index'], v2LT[0] + w/2 , v2LT[1] + h/2, w/2, h/2 ] )
                         v2LT[1] = v2LT[1] + h
-                        print('case2')
+                        # print('case2')
                 else:
                     GS.insert(i, 'dummy')
-                    print('case3')
+                    # print('case3')
             # print( str(i) + ' : '+ str(center[i]) )
             else:
                 print('error')
@@ -142,10 +142,10 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
         num += 1
     # print('center is ')
     # print(center)
-    print(num)
+    # print(num)
 
 
-    print(len(center))
+    # print(len(center))
     center.sort(key=itemgetter(0))
     # print(center)
 
@@ -201,7 +201,7 @@ if __name__ == '__main__':
             try:
                 global file
                 for file in os.listdir(main + dir):
-                    print(file)
+                    # print(file)
                     if (dir != '.DS_Store'):
                         global path
                         path = main + dir + '/' + file
@@ -210,7 +210,7 @@ if __name__ == '__main__':
                         groupSize = []
                         center = []
                         links = []
-                        width = 900
+                        width = 960
                         height = 600
                         readjson(nodes, groups, links)
                         calcSize(groups, width, height, groupSize)

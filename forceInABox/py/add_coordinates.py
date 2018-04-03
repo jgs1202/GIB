@@ -2,9 +2,15 @@
 
 import os
 import json
+import sys
 
-main = '../data/CGIB/'
-output = '../data/CGIB_comp/'
+argvs = sys.argv
+if len(argvs) != 2:
+    print('ERROR : You must give 2 arguments.')
+    sys.exit()
+main = '../data/' + argvs[1] + '/'
+output = '../data/' + argvs[1] +'_comp/'
+
 
 inp = input('Are you really run this program? This can damage your data. (y/n) :')
 if inp == 'y':
