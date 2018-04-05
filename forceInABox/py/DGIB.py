@@ -11,7 +11,7 @@ import sys
 import os
 
 def readjson(nodes, groups):
-    reader = open('../data/origin/data.json', 'r')
+    reader = open(path, 'r')
     data = json.load(reader)
     nodes = data['nodes']
     length = len(nodes)
@@ -44,8 +44,26 @@ def calcSize(groups, width, height, groupSize):
         dic['size'] = (len(groups[i])/total)
         dic['index'] = i
         groupSize.append(dic)
-    groupSize.sort(key=itemgetter('size'), reverse = True )
-    # print(groupSize)
+
+    #find most connective one
+    connective =[]
+    # print('../data/origin-group-link/number/' + dir +'/' + file[:-5] + '.csv')
+    with open('../data/origin-group-link/number/' + dir +'/' + file[:-5] + '.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            connective = row
+
+    max = 0
+    for i in range(length):
+        if float(connective[i]) > float(connective[max]):
+            max = i
+    if max!=0 or float(connective[max]) != 0.0:
+        most = copy.deepcopy(groupSize[max])
+        del groupSize[max]
+        groupSize.sort(key=itemgetter('size'), reverse = True )
+        groupSize.insert(0, most)
+    else:
+        groupSize.sort(key=itemgetter('size'), reverse = True )
 
 def dougnut(groups, width, height, groupSize, center):
 
@@ -189,7 +207,7 @@ def dougnut(groups, width, height, groupSize, center):
     groupCoo.append(dic)
 
 
-    reader = open('../data/origin/data.json', 'r')
+    reader = open(path, 'r')
     data = json.load(reader)
     links = data['links']
     nodes = data['nodes']
@@ -212,25 +230,25 @@ if __name__ == '__main__':
     global dir
     for dir in os.listdir(main):
         if (dir != '.DS_Store'):
-            try:
-                global file
-                for file in os.listdir(main + dir):
-                    # print(file)
-                    if (dir != '.DS_Store'):
-                        global path
-                        path = main + dir + '/' + file
-                        nodes = []
-                        groups = []
-                        groupSize = []
-                        center = []
-                        width = 960
-                        height = 600
-                        readjson(nodes, groups)
-                        calcSize(groups, width, height, groupSize)
-                        dougnut(groups, width, height, groupSize, center)
-                        # print(groupSize)
-            except:
-                pass
+            # try:
+            global file
+            for file in os.listdir(main + dir):
+                # print(file)
+                if (dir != '.DS_Store'):
+                    global path
+                    path = main + dir + '/' + file
+                    nodes = []
+                    groups = []
+                    groupSize = []
+                    center = []
+                    width = 960
+                    height = 600
+                    readjson(nodes, groups)
+                    calcSize(groups, width, height, groupSize)
+                    dougnut(groups, width, height, groupSize, center)
+                    # print(groupSize)
+            # except:
+            #     pass
 
     import pylab as pl
     pl.xticks([0, width])

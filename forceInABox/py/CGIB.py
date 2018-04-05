@@ -45,8 +45,31 @@ def calcSize(groups, width, height, groupSize):
         dic['size'] = (len(groups[i])/total)
         dic['index'] = i
         groupSize.append(dic)
-    groupSize.sort(key=itemgetter('size'), reverse = True )
-    # print(groupSize)
+
+    #find most connective one
+    connective =[]
+    # print('../data/origin-group-link/number/' + dir +'/' + file[:-5] + '.csv')
+    with open('../data/origin-group-link/number/' + dir +'/' + file[:-5] + '.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            connective = row
+
+    max = 0
+    for i in range(length):
+        if float(connective[i]) > float(connective[max]):
+            max = i
+    if max!=0 or float(connective[max]) != 0.0:
+        most = copy.deepcopy(groupSize[max])
+        del groupSize[max]
+        groupSize.sort(key=itemgetter('size'), reverse = True )
+        groupSize.insert(0, most)
+    else:
+        groupSize.sort(key=itemgetter('size'), reverse = True )
+    # if groupSize[0]['size'] < groupSize[1]['size']:
+    #     print('/////////////////////////////////////////////////////////////////////////////')
+    #     print(groupSize)
+    #     print(max, most)
+    #     print(connective[max])
 
 def croissant(groups, width, height, groupSize, center, nodes, links):
 
@@ -144,7 +167,7 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
     # print(center)
     # print(num)
 
-
+    print('complete')
     # print(len(center))
     center.sort(key=itemgetter(0))
     # print(center)
@@ -195,28 +218,32 @@ def croissant(groups, width, height, groupSize, center, nodes, links):
 
 if __name__ == '__main__':
     main = '../data/origin/'
+    num = 0
     global dir
     for dir in os.listdir(main):
         if (dir != '.DS_Store'):
-            try:
-                global file
-                for file in os.listdir(main + dir):
-                    # print(file)
-                    if (dir != '.DS_Store'):
-                        global path
-                        path = main + dir + '/' + file
-                        nodes = []
-                        groups = []
-                        groupSize = []
-                        center = []
-                        links = []
-                        width = 960
-                        height = 600
-                        readjson(nodes, groups, links)
-                        calcSize(groups, width, height, groupSize)
-                        croissant(groups, width, height, groupSize, center, nodes, links)
-            except:
-                pass
+            # try:
+            global file
+            for file in os.listdir(main + dir):
+                # print(file)
+                dir = "18-0.0005-0.05"
+                if (dir != '.DS_Store'):
+                    # if num > 0:
+                    num += 1
+                    global path
+                    path = main + dir + '/' + file
+                    nodes = []
+                    groups = []
+                    groupSize = []
+                    center = []
+                    links = []
+                    width = 960
+                    height = 600
+                    readjson(nodes, groups, links)
+                    calcSize(groups, width, height, groupSize)
+                    croissant(groups, width, height, groupSize, center, nodes, links)
+            # except:
+            #     pass
 
     import pylab as pl
     pl.xticks([0, width])
