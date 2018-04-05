@@ -112,7 +112,7 @@ def dougnut(groups, width, height, groupSize, center):
             elif i%4 == 2:
                 h = height/2 - center[0][4]
                 w = width * height * GS[i]['size'] / h
-                # if max([w/h, h/w]) < 10:
+                if max([w/h, h/w]) < 10:
                     # print('case3')
                     if h2LT[0] + w > width:
                         # print('case12')
@@ -176,10 +176,10 @@ def dougnut(groups, width, height, groupSize, center):
         num += 1
     # print('center is ')
     # print(center)
-    print(num)
+    # print(num)
 
     center.sort(key=itemgetter(0))
-    print(center)
+    # print(center)
 
     length = len(center)
     data = []
