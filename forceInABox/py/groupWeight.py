@@ -6,14 +6,14 @@ import sys
 import os
 
 def test(path, dir, file):
-	boxes = []
-	f = open('../data/FDGIB/boxes.csv', 'r')
-	reader1 = csv.reader(f)
-	for i in reader1:
-		boxes.append(i)
+	# boxes = []
+	# f = open('../data/FDGIB/boxes.csv', 'r')
+	# reader1 = csv.reader(f)
+	# for i in reader1:
+	# 	boxes.append(i)
 
-	boxNum = len(boxes)
-	print(len(boxes))
+	# boxNum = len(boxes)
+	# print(len(boxes))
 
 	reader2 = open(path, 'r')
 	data= json.load(reader2)

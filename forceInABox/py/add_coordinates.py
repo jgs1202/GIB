@@ -28,6 +28,7 @@ if inp == 'y':
                 sentence = ''
                 num = 0
                 index = 0
+                print(dir, num)
                 for i in txt:
                     try:
                         sentence += (str(int(i)))
