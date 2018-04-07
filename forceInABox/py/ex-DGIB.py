@@ -7,38 +7,74 @@ from operator import itemgetter
 import math
 import csv
 import copy
-import os
 import sys
+import os
 
-def doughnut( mostConnect, data, groups, path, dir, file, width, height):
-    center = []
+def readjson(nodes, groups):
+    reader = open(path, 'r')
+    data = json.load(reader)
+    nodes = data['nodes']
+    length = len(nodes)
+
+    maxGroup = 0
+    for i in range(length):
+        current = nodes[i]['group']
+        if current > maxGroup:
+            maxGroup = current
+    for i in range(maxGroup+1):
+        groups.append([])
+
+    for i in range(length):
+        dic = {}
+        dic['number'] = i
+        # dic['x'] = nodes[i]['x']
+        # dic['y'] = nodes[i]['y']
+        groups[nodes[i]['group']].append(dic)
+    # print(groups)
+
+def calcSize(groups, width, height, groupSize):
     total = 0
     length = len(groups)
-    groupSize = []
     for i in range(length):
         total += len(groups[i])
     for i in range(length):
         dic = {}
+        # print(len(groups[i])/total)
+        # dic['size'] = math.sqrt(len(groups[i])/total)
         dic['size'] = (len(groups[i])/total)
         dic['index'] = i
         groupSize.append(dic)
 
-    length = len(mostConnect)
-    maxSize = 0
-    for i in range(length):
-        if groupSize[i]['size'] > groupSize[maxSize]['size']:
-            maxSize = i
+    #find most connective one
+    connective =[]
+    # print('../data/origin-group-link/number/' + dir +'/' + file[:-5] + '.csv')
+    with open('../data/origin-group-link/number/' + dir +'/' + file[:-5] + '.csv', 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            connective = row
 
-    top = copy.deepcopy(groupSize[maxSize])
-    del groupSize[maxSize]
-    groupSize.sort(key=itemgetter('size'), reverse = True )
-    groupSize.insert(0, top)
+    max = 0
+    for i in range(length):
+        if float(connective[i]) > float(connective[max]):
+            max = i
+    if max!=0 or float(connective[max]) != 0.0:
+        most = copy.deepcopy(groupSize[max])
+        del groupSize[max]
+        groupSize.sort(key=itemgetter('size'), reverse = True )
+        groupSize.insert(0, most)
+    else:
+        groupSize.sort(key=itemgetter('size'), reverse = True )
+
+def dougnut(groups, width, height, groupSize, center):
 
     length = len(groups)
     verify = 0
     num = 0
+    # print(length)
     while ( verify == 0 and num < 10):
         GS = copy.deepcopy( groupSize )
+        # print(num)
+        # print(GS[0])
         lengthC = len(center)
         for i in range(lengthC):
             del center[0]
@@ -122,12 +158,12 @@ def doughnut( mostConnect, data, groups, path, dir, file, width, height):
                 else:
                     GS.insert(i, 'dummy')
                     # print('case8')
-            # else:
-                # print('error')
-            if sequence > 3:
+            else:
+                print('error')
+            if  sequence > 3:
                 for j in range(len(groupSize)):
                     groupSize[j]['size'] = groupSize[j]['size'] * 0.9
-                # print('over')
+                print('over')
                 break
             # print( str(i) + ' : '+ str(center[i]) )
             if i == len(GS) - 1 :
@@ -138,10 +174,22 @@ def doughnut( mostConnect, data, groups, path, dir, file, width, height):
                 print('This data is not suited to Doughunt layout.')
                 sys.exit()
         num += 1
+    # print('center is ')
+    # print(center)
+    # print(num)
 
-    # print('complete')
     center.sort(key=itemgetter(0))
     # print(center)
+
+    length = len(center)
+    data = []
+    for i in range(length):
+        data.append( center[1:] )
+
+    # with open('DGIB_boxes.csv', 'w') as f:
+    #     writer = csv.writer(f)
+    #     for i in data:
+    #         writer.writerow(i)
 
     groupCoo = []
     for i in center:
@@ -158,6 +206,9 @@ def doughnut( mostConnect, data, groups, path, dir, file, width, height):
     dic['dy'] = height
     groupCoo.append(dic)
 
+
+    reader = open(path, 'r')
+    data = json.load(reader)
     links = data['links']
     nodes = data['nodes']
 
@@ -167,17 +218,43 @@ def doughnut( mostConnect, data, groups, path, dir, file, width, height):
     forWrite['groups'] = groupCoo
 
     try:
-        verify = os.listdir('../data/Chaturvedi/temp/' + dir)
+        verify = os.listdir('../data/DGIB/' + dir)
     except:
-        os.mkdir('../data/Chaturvedi/temp/' + dir)
-    f = open('../data/Chaturvedi/temp/' + dir + '/' + file, 'w')
+        os.mkdir('../data/DGIB/' + dir)
+    f = open('../data/DGIB/' + dir + '/' + file, 'w')
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
-    # import pylab as pl
-    # pl.xticks([0, width])
-    # pl.yticks([0, height])
-    # for i in center:
-    #     # if i[2] == 15:
-    #     pl.gca().add_patch( pl.Rectangle(xy=[i[1]-i[3], height - i[2]-i[4]], width=i[3]*2, height=i[4]*2, linewidth='1.0', fill=False) )
-    #     # print(i)
-    # pl.show()
+
+if __name__ == '__main__':
+    main = '../data/origin/'
+    global dir
+    for dir in os.listdir(main):
+        if (dir != '.DS_Store'):
+            # try:
+            global file
+            for file in os.listdir(main + dir):
+                # print(file)
+                if (dir != '.DS_Store'):
+                    global path
+                    path = main + dir + '/' + file
+                    nodes = []
+                    groups = []
+                    groupSize = []
+                    center = []
+                    width = 960
+                    height = 600
+                    readjson(nodes, groups)
+                    calcSize(groups, width, height, groupSize)
+                    dougnut(groups, width, height, groupSize, center)
+                    # print(groupSize)
+            # except:
+            #     pass
+
+    import pylab as pl
+    pl.xticks([0, width])
+    pl.yticks([0, height])
+    for i in center:
+        # if i[2] == 15:
+        pl.gca().add_patch( pl.Rectangle(xy=[i[1]-i[3], height - i[2]-i[4]], width=i[3]*2, height=i[4]*2, linewidth='1.0', fill=False) )
+        # print(i)
+    pl.show()

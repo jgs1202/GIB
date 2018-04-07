@@ -3,6 +3,9 @@
 import os
 import json
 import sys
+from DGIB import doughnut
+from CGIB import croissant
+from STGIB import ST
 
 def readjson(path, dir, file):
     reader = open(path, 'r')
@@ -51,6 +54,7 @@ def readjson(path, dir, file):
 
     max = Gskew[0][0]
     length1 = len(Gskew)
+    maxIndex = []
     for i in range(length1):
         length2 = len(Gskew[i])
         for j in range(length2):
@@ -63,8 +67,11 @@ def readjson(path, dir, file):
     #         length2 = len(Gskew[i])
     #         for j in range(length2):
     #             Gskew[i][j] /= max
-    G_skewness =  ( len(groups[maxIndex[0]]) + len(groups[maxIndex[1]] ))  / len(data['nodes'])
-    print(G_skewness)
+    if len(maxIndex) != 0:
+        G_skewness =  ( len(groups[maxIndex[0]]) + len(groups[maxIndex[1]] ))  / len(data['nodes'])
+    else:
+        G_skewness = 0
+    # print(G_skewness)
 
     ###################### G-degree ##########################
 
@@ -85,6 +92,7 @@ def readjson(path, dir, file):
                         if float(Gskew[j][k]) != 0.0:
                             Gdegree[i] += 1
     max = 0
+    mostConnect = []
     for i in range(length):
         if max < Gdegree[i]:
             max = Gdegree[i]
@@ -92,25 +100,35 @@ def readjson(path, dir, file):
         elif max == Gdegree[i]:
             mostConnect.append(i)
     Gmax = max
-    if Gmax <= 3 and G_skewness < 0.1:
+    if Gmax <= 3 or G_skewness < 0.1:
         type = 'STGIB'
+        ST(mostConnect, data, groups, path, dir, file, width, height)
     elif Gmax > 3 and G_skewness >= 0.1 and G_skewness <= 0.45:
         type = 'DGIB'
+        doughnut(mostConnect, data, groups, path, dir, file, width, height)
     elif Gmax > 3 and G_skewness > 0.45:
         type = 'CGIB'
-    print(Gmax, G_skewness, type)
-    sys.exit()
+        croissant(mostConnect, data, groups, path, dir, file, width, height)
+    # print(Gmax, mostConnect, G_skewness, maxIndex)
+    print(type)
+    # print(Gmax, mostConnect, G_skewness, maxIndex, type)
+
+    # sys.exit()
 
 
 if __name__ == '__main__':
     main = '../data/origin/'
+    global width
+    global height
+    width = 960
+    height = 500
     num = 0
     for dir in os.listdir(main):
         if (dir != '.DS_Store'):
             # try:
             for file in os.listdir(main + dir):
                 # print(file)
-                dir = "18-0.0005-0.05"
+                # dir = "18-0.0005-0.05"
                 if (dir != '.DS_Store'):
                     # if num > 0:
                     num += 1
