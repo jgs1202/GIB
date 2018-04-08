@@ -9,10 +9,7 @@ import csv
 import copy
 import sys
 
-def edgeCross():
-    reader = open('../data/FDGIB/PRISM.json', 'r')
-    global data
-    data = json.load(reader)
+def edgeCross(data):
 
     nodes = data['nodes']
     links = data['links']
@@ -37,10 +34,6 @@ def edgeCross():
             index3 = links[i+j+1]['source']['index']
             index4 = links[i+j+1]['target']['index']
 
-            # print(i, j)
-            # print('j is ' + str(i+j+1))
-
-
             try:
                 # if an either of thw two links is vertical, we do not count
                 if tx1 == sx1 and tx2 != sx2:
@@ -49,24 +42,18 @@ def edgeCross():
                 elif tx1 != sx1 and tx2 == sx2:
                     x = tx2
                     y = (ty1 - sy1)/(tx1- sx1) * (x - sx1) + sy1
-
                 else:
                     tan1 = (ty1 - sy1)/(tx1- sx1)
                     tan2 = (ty2 - sy2)/(tx2- sx2)
                     # tan1 * x - tan1 * sx1 + sy1 = tan2 * x - tan2 * sx2 + sy2
                     x = ( sy2 - sy1 + tan1 * sx1 - tan2* sx2) / (tan1 - tan2)
                     y = tan1 * (x - sx1) + sy1
-
-                # print( (sx1 - x)*(tx1 - x) , (sx2 - x)*(tx2 - x) , (sy1 - y)*(ty1 - y) , (sy2 - y)*(ty2 - y) )
-                # print(x,y)
-
                 # if intersection point is same as either of source or target we do not count
                 if [x,y] == [sx1, sy1] or [x,y] == [sx2, sy2] or [x,y] == [tx1, ty1] or [x,y] == [tx2, ty2]:
                     pass
                 else :
                     if (sx1 - x)*(tx1 - x) <= 0 and (sx2 - x)*(tx2 - x) <= 0 and (sy1 - y)*(ty1 - y) <= 0 and (sy2 - y)*(ty2 - y) <= 0:
                         total += 1
-
             except:
                 pass
 
@@ -75,7 +62,6 @@ def edgeCross():
     import matplotlib.pyplot as plt
     plt.gca().invert_yaxis()
     for i in links:
-        # print(i['source']['index'], i['target']['index'])
         plt.plot([ nodes[ i['source']['index']] ['x'], nodes[i['target']['index']] ['x'] ],  [ nodes[ i['source']['index']] ['y'], nodes[i['target']['index']] ['y']  ], 'k-')
 
     x = []
@@ -87,20 +73,18 @@ def edgeCross():
     plt.show()
     return total
 
-def aspect():
-    global boxes
+def aspect(data):
     boxes = data['groups']
-
     mean = 0
     for i in boxes:
         as1 = i['dx']/i['dy']
         as2 = i['dy']/i['dx']
         aspect = max([as1, as2])
         mean += aspect
-
     return mean / len(boxes)
 
-def spaceWasted():
+def spaceWasteddata(data):
+    boxes = data['groups']
     minx = boxes[0]['x']
     maxx = minx + boxes[0]['dx']
     miny = boxes[0]['y']
