@@ -5,7 +5,7 @@ import json
 from operator import itemgetter
 import os
 
-def ST(mostConnect, data, groups, path, dir, file, width, height):
+def ST(data, groups, path, dir, file, width, height, use):
     # these values define the coordinate system for the returned rectangles
     # the values will range from x to x + width and y to y + height
     x = 0.
@@ -34,15 +34,22 @@ def ST(mostConnect, data, groups, path, dir, file, width, height):
 
     # returns a list of rectangles
     rects = squarify.squarify(values, x, y, width, height)
-
     # padded rectangles will probably visualize better for certain cases
     # padded_rects = squarify.padded_squarify(values, x, y, width, height)
     # print(padded_rects)
     for i in range(length):
         rects[i]['index'] = index[i]
-    rects.sort(key=itemgetter('index'), reverse = True )
+
+    rects.sort(key=itemgetter('index'))
     for i in range(length):
         del rects[i]['index']
+
+    dic = {}
+    dic['x'] = 0
+    dic['y'] = 0
+    dic['dx'] = width
+    dic['dy'] = height
+    rects.append(dic)
 
     links = data['links']
     nodes = data['nodes']
@@ -53,8 +60,45 @@ def ST(mostConnect, data, groups, path, dir, file, width, height):
     forWrite['groups'] = rects
 
     try:
-        verify = os.listdir('../data/Chaturvedi/temp/' + dir)
+        verify = os.listdir('../data/' + use  + '/temp/' + dir)
     except:
-        os.mkdir('../data/Chaturvedi/temp/' + dir)
-    f = open('../data/Chaturvedi/temp/' + dir + '/' + file, 'w')
+        os.mkdir('../data/' + use  + '/temp/' + dir)
+    f = open('../data/' + use  + '/temp/' + dir + '/' + file, 'w')
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+
+if __name__ == '__main__':
+    main = '../data/origin/'
+    width = 960
+    height = 600
+    num = 0
+    for dir in os.listdir(main):
+        if (dir != '.DS_Store'):
+            # try:
+            for file in os.listdir(main + dir):
+                # print(file)
+                # dir = "18-0.0005-0.05"
+                if (dir != '.DS_Store'):
+                    num += 1
+                    path = main + dir + '/' + file
+                    width = 960
+                    height = 600
+                    reader = open(path, 'r')
+                    data = json.load(reader)
+                    nodes = data['nodes']
+                    length = len(nodes)
+                    maxGroup = 0
+                    # get length of group
+                    for i in range(length):
+                        current = nodes[i]['group']
+                        if current > maxGroup:
+                            maxGroup = current
+                    groups = [ [] for i in range(maxGroup+1)]
+
+                    # make list 'groups' a list have nodes' index
+                    for i in range(length):
+                        dic = {}
+                        dic['number'] = i
+                        groups[nodes[i]['group']].append(dic)
+
+                    use = 'STGIB'
+                    ST(data, groups, path, dir, file, width, height, use)

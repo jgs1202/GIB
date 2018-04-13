@@ -8,18 +8,18 @@ argvs = sys.argv
 if len(argvs) != 2:
     print('ERROR : You must give 2 arguments.')
     sys.exit()
-main = '../data/' + argvs[1] + '/'
-output = '../data/' + argvs[1] +'_comp/'
+main = '../data/' + argvs[1] + '/temp/'
+output = '../data/' + argvs[1] +'/comp/'
 
 
 inp = input('Are you really run this program? This can damage your data. (y/n) :')
 if inp == 'y':
     for dir in os.listdir(main):
         if dir != '.DS_Store':
-            for num in range(20):
-                f = open(main + dir + '/' + str(num) + '-nodes.txt')
+            for dataNum in range(20):
+                f = open(main + dir + '/' + str(dataNum) + '-nodes.txt')
                 txt = f.read()
-                reader = open(main + dir + '/' + str(num) + '.json')
+                reader = open(main + dir + '/' + str(dataNum) + '.json')
                 global data
                 data = json.load(reader)
 
@@ -28,7 +28,7 @@ if inp == 'y':
                 sentence = ''
                 num = 0
                 index = 0
-                print(dir, num)
+                # print(dir, num)
                 for i in txt:
                     try:
                         sentence += (str(int(i)))
@@ -60,7 +60,7 @@ if inp == 'y':
                     current = os.listdir(output + dir)
                 except:
                     os.mkdir(output + dir)
-                f = open(output + dir + '/' + str(num) + '.json' , 'w')
+                f = open(output + dir + '/' + str(dataNum) + '.json' , 'w')
                 json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 else:
     pass

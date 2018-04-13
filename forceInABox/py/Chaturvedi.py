@@ -102,7 +102,8 @@ def readjson(path, dir, file):
     Gmax = max
     if Gmax <= 3 or G_skewness < 0.1:
         type = 'STGIB'
-        ST(mostConnect, data, groups, path, dir, file, width, height)
+        use = 'Chaturvedi'
+        ST(data, groups, path, dir, file, width, height, use)
     elif Gmax > 3 and G_skewness >= 0.1 and G_skewness <= 0.45:
         type = 'DGIB'
         doughnut(mostConnect, data, groups, path, dir, file, width, height)
@@ -121,7 +122,7 @@ if __name__ == '__main__':
     global width
     global height
     width = 960
-    height = 500
+    height = 600
     num = 0
     for dir in os.listdir(main):
         if (dir != '.DS_Store'):

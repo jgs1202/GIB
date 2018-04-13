@@ -22,7 +22,6 @@ function forceInABox(alpha) {
     templateForce,
     templateNodesSel,
     groupBy = function(d) { return d.cluster; },
-    template = "treemap",
     enableGrouping = true,
     strength = 0.1;
   // showingTemplate = false;
@@ -30,7 +29,7 @@ function forceInABox(alpha) {
   let groups = [],
     boxes = [],
     data = {}
-  console.log(groups)
+  // console.log(groups)
 
 
   function force(alpha) {
@@ -234,7 +233,7 @@ function forceInABox(alpha) {
       if (typeof link.source !== "object") source = nodes[link.source];
       if (typeof link.target !== "object") target = nodes[link.target];
       if (source === undefined || target === undefined) {
-        console.log(link);
+        // console.log(link);
         throw Error("Error setting links, couldn't find nodes for a link (see it on the console)");
       }
       link.source = source;
@@ -269,8 +268,8 @@ function forceInABox(alpha) {
   }
 
   function onEnd() {
-    console.log(nodes)
-    console.log(nodes.map(function(d) { return [d.x, d.y] }))
+    // console.log(nodes)
+    // console.log(nodes.map(function(d) { return [d.x, d.y] }))
     getCoo()
   }
 
@@ -289,7 +288,7 @@ function forceInABox(alpha) {
     for (let i = 0; i < nodes.length; i++) {
       groups[nodes[i].group].push(i)
     }
-    console.log(groups)
+    // console.log(groups)
     calcBox()
   }
 
@@ -340,7 +339,7 @@ function forceInABox(alpha) {
     // for (let i=0; i<data.boxes.length; i++){
     //   d3.select('#' + '' + i).remove()
     // }
-    console.log(boxes)
+    // console.log(boxes)
     // console.log(typeof data.nodes)
     // console.log(data.nodes)
 
@@ -365,14 +364,14 @@ function forceInABox(alpha) {
         max = area[i]
       }
     }
-    console.log(max, area)
+    // console.log(max, area)
     for (let i = 0; i < area.length; i++) {
       // if (area[i] === max){
       let groupSize = max * groups[i].length
       let side = Math.sqrt(groupSize)
       let cy = (data.boxes[i][1] + data.boxes[i][0]) / 2
       let cx = (data.boxes[i][3] + data.boxes[i][2]) / 2
-      console.log(groupSize, side, cy, cx)
+      // console.log(groupSize, side, cy, cx)
 
       data.boxes[i][0] = cy - side/2
       data.boxes[i][1] = cy + side/2
@@ -407,7 +406,7 @@ function forceInABox(alpha) {
       let coo = [{ "x": data.boxes[i][2], "y": data.boxes[i][0] }, { "x": data.boxes[i][2], "y": data.boxes[i][1] },
         { "x": data.boxes[i][3], "y": data.boxes[i][1] }, { "x": data.boxes[i][3], "y": data.boxes[i][0] }, { "x": data.boxes[i][2], "y": data.boxes[i][0] }
       ]
-      console.log('coo is ' + '' + coo[0]['x'])
+      // console.log('coo is ' + '' + coo[0]['x'])
       var lineFunc = d3.line()
         .x(function(d) { return d.x; })
         .y(function(d) { return d.y; });
