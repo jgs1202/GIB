@@ -656,7 +656,14 @@ export default {
           // .attr('id', i)
         }
         data.links = links
-        // console.log(data)
+        data.id = 0
+        fetch('http://localhost:3000/coordinates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }).then(res => res.json()).then(console.log);
         // downloadFile(data, 'data', 'json')
         // downloadFile(links, 'links', 'json')
         // downloadFile(tableToCsvString(data.boxes), 'boxes', 'csv')
