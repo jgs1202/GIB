@@ -58,6 +58,9 @@ def ST(data, groups, path, dir, file, width, height, use):
     forWrite['nodes'] = nodes
     forWrite['links'] = links
     forWrite['groups'] = rects
+    forWrite['groupSize'] = data['groupSize']
+    forWrite['pgroup'] = data['pgroup']
+    forWrite['pout'] = data['pout']
 
     try:
         verify = os.listdir('../data/' + use  + '/temp/' + dir)

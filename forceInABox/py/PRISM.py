@@ -3,22 +3,25 @@
 # size is 900*600
 
 import csv
+import os
 import copy
 import json
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import decimal
 
-def makeData(center, links, boxes):
-    f = open('../data/FDGIB/boxes.csv', 'r')
-    reader1 = csv.reader(f)
-    for i in reader1:
-        boxes.append(i)
+def makeData(center, links, boxes, data):
+    for i in data['boxes']:
+        list = []
+        list.extend([ i['one'], i['two'], i['three'], i['four'] ])
+        boxes.append(list)
 
     # print(boxes)
 
     linkWeights = []
-    f = open('../data/FDGIB/link_boxes.csv', 'r')
+    f = open('../data/origin-group-link/weight/' + data['dir'][2:] + data['file'][:-5] + '.csv', 'r')
     reader2 = csv.reader(f)
     for i in reader2:
         linkWeights.append(i)
@@ -35,7 +38,6 @@ def makeData(center, links, boxes):
             diry = 15
         center.append( [ float(boxes[i][2]) + dirx , float(boxes[i][0]) + diry, dirx, diry])
 
-    # print(center)
 
     num1 = len(linkWeights)
     for i in range(num1):
@@ -49,8 +51,6 @@ def makeData(center, links, boxes):
     # print(links)
 
 def checkPRISM(center, links, boxes):
-    width = 900
-    height = 600
     oldcenter = copy.deepcopy(center)
     t = []
     num = 0
@@ -66,8 +66,14 @@ def checkPRISM(center, links, boxes):
         # print(center)
 
         for i in range(length):
-            xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
-            yover = ( center[links[i]['node1']][3] + center[links[i]['node2']][3] +5) / ( abs( center[links[i]['node1']][1] - center[links[i]['node2']][1]) )
+            if center[links[i]['node1']][0] != center[links[i]['node2']][0]:
+                xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
+            else:
+                xover = float('inf')
+            if center[links[i]['node1']][1] != center[links[i]['node2']][1]:
+                yover = ( center[links[i]['node1']][3] + center[links[i]['node2']][3] +5) / ( abs( center[links[i]['node1']][1] - center[links[i]['node2']][1]) )
+            else:
+                yover = float("inf")
             # print(xover, center[links[i]['node1']][2], center[links[i]['node2']][2] ,center[links[i]['node1']][0] , center[links[i]['node2']][0])
             # print(xover, yover)
             if xover < yover:
@@ -97,40 +103,40 @@ def checkPRISM(center, links, boxes):
                     # print('xmove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][0] < center[links[i]['node2']][0]: #which direction should we move to
-                            print('1')
+                            # print('1')
                             center[links[i]['node1']][0] = center[links[i]['node2']][0] -  center[links[i]['node1']][2] - center[links[i]['node2']][2] - 15
                         else:
-                            print('2')
+                            # print('2')
                             center[links[i]['node1']][0] = center[links[i]['node2']][0] + center[links[i]['node1']][2] + center[links[i]['node2']][2] + 15
                     else:
                         if center[links[i]['node2']][0] < center[links[i]['node1']][0]: #which direction should we move to
-                            print('3')
+                            # print('3')
                             center[links[i]['node2']][0] = center[links[i]['node1']][0] -  center[links[i]['node1']][2] - center[links[i]['node2']][2] - 15
                         else:
-                            print('4')
+                            # print('4')
                             center[links[i]['node2']][0] = center[links[i]['node1']][0] + center[links[i]['node1']][2] + center[links[i]['node2']][2] + 15
                 elif which['key'] == 'y':
                     # print('ymove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][1] < center[links[i]['node2']][1]: #which direction should we move to
-                            print('5')
+                            # print('5')
                             center[links[i]['node1']][1] = center[links[i]['node2']][1] -  center[links[i]['node1']][3] - center[links[i]['node2']][3] - 15
                         else:
-                            print('6')
+                            # print('6')
                             center[links[i]['node1']][1] = center[links[i]['node2']][1] + center[links[i]['node1']][3] + center[links[i]['node2']][3] + 15
                     else:
                         if center[links[i]['node2']][1] < center[links[i]['node1']][1]: #which direction should we move to
-                            print('7')
+                            # print('7')
                             center[links[i]['node2']][1] = center[links[i]['node1']][1] -  center[links[i]['node1']][3] - center[links[i]['node2']][3] - 15
                         else:
-                            print('8')
+                            # print('8')
                             center[links[i]['node2']][1] = center[links[i]['node1']][1] + center[links[i]['node1']][3] + center[links[i]['node2']][3] + 15
                 # print('new')
                 # print(center[links[i]['node1']])
                 # print(center[links[i]['node2']])
 
-        print( 'num is ' + str(num))
-        print(t)
+        # print( 'num is ' + str(num))
+        # print(t)
         # for i in range(10):
         #     print(str(center[i][0] - excenter[i][0]) + ', ' + str(center[i][1] - excenter[i][1]))
         print('the number of t is ' + str(t.count(1.0)))
@@ -161,9 +167,7 @@ def checkPRISM(center, links, boxes):
     # json.dump(nodes, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 
-def checkAll(center, boxes):
-    width = 900
-    height = 600
+def checkAll(center, boxes, data):
     oldcenter = copy.deepcopy(center)
     links = []
 
@@ -175,11 +179,12 @@ def checkAll(center, boxes):
             dic['node1'] = i
             dic['node2'] = i + j
             links.append(dic)
-    print(links)
+    # print(links)
 
     t = []
     num = 0
-    while num < 100 and int(t.count(1.0)) != int(len(links)):
+    double = 0
+    while num < 100 and double != 2:
         t = []
         which = {}
         length = len(links)
@@ -191,8 +196,16 @@ def checkAll(center, boxes):
         # print(center)
 
         for i in range(length):
-            xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2]+5) / ( abs( center[int(links[i]['node1'])][0] - center[int(links[i]['node2'])][0]) )
-            yover = ( center[links[i]['node1']][3] + center[links[i]['node2']][3]+5) / ( abs( center[links[i]['node1']][1] - center[links[i]['node2']][1]) )
+            if center[links[i]['node1']][0] != center[links[i]['node2']][0]:
+                xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
+            else:
+                xover = float('inf')
+            if center[links[i]['node1']][1] != center[links[i]['node2']][1]:
+                yover = ( center[links[i]['node1']][3] + center[links[i]['node2']][3] +5) / ( abs( center[links[i]['node1']][1] - center[links[i]['node2']][1]) )
+            else:
+                yover = float("inf")
+            # xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2]+5) / ( abs( center[int(links[i]['node1'])][0] - center[int(links[i]['node2'])][0]) )
+            # yover = ( center[links[i]['node1']][3] + center[links[i]['node2']][3]+5) / ( abs( center[links[i]['node1']][1] - center[links[i]['node2']][1]) )
             # print(xover, center[links[i]['node1']][2], center[links[i]['node2']][2] ,center[links[i]['node1']][0] , center[links[i]['node2']][0])
             # print(xover, yover)
             if xover < yover:
@@ -222,43 +235,47 @@ def checkAll(center, boxes):
                     # print('xmove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][0] < center[links[i]['node2']][0]: #which direction should we move to
-                            print('1')
+                            # print('1')
                             center[links[i]['node1']][0] = center[links[i]['node2']][0] -  center[links[i]['node1']][2] - center[links[i]['node2']][2] - 15
                         else:
-                            print('2')
+                            # print('2')
                             center[links[i]['node1']][0] = center[links[i]['node2']][0] + center[links[i]['node1']][2] + center[links[i]['node2']][2] + 15
                     else:
                         if center[links[i]['node2']][0] < center[links[i]['node1']][0]: #which direction should we move to
-                            print('3')
+                            # print('3')
                             center[links[i]['node2']][0] = center[links[i]['node1']][0] -  center[links[i]['node1']][2] - center[links[i]['node2']][2] - 15
                         else:
-                            print('4')
+                            # print('4')
                             center[links[i]['node2']][0] = center[links[i]['node1']][0] + center[links[i]['node1']][2] + center[links[i]['node2']][2] + 15
                 elif which['key'] == 'y':
                     # print('ymove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][1] < center[links[i]['node2']][1]: #which direction should we move to
-                            print('5')
+                            # print('5')
                             center[links[i]['node1']][1] = center[links[i]['node2']][1] -  center[links[i]['node1']][3] - center[links[i]['node2']][3] - 15
                         else:
-                            print('6')
+                            # print('6')
                             center[links[i]['node1']][1] = center[links[i]['node2']][1] + center[links[i]['node1']][3] + center[links[i]['node2']][3] + 15
                     else:
                         if center[links[i]['node2']][1] < center[links[i]['node1']][1]: #which direction should we move to
-                            print('7')
+                            # print('7')
                             center[links[i]['node2']][1] = center[links[i]['node1']][1] -  center[links[i]['node1']][3] - center[links[i]['node2']][3] - 15
                         else:
-                            print('8')
+                            # print('8')
                             center[links[i]['node2']][1] = center[links[i]['node1']][1] + center[links[i]['node1']][3] + center[links[i]['node2']][3] + 15
                 # print('new')
                 # print(center[links[i]['node1']])
                 # print(center[links[i]['node2']])
 
-        print( 'num is ' + str(num))
-        print(t)
+        # print( 'num is ' + str(num))
+        # print(t)
         # for i in range(10):
         #     print(str(center[i][0] - excenter[i][0]) + ', ' + str(center[i][1] - excenter[i][1]))
         print('the number of t is ' + str(t.count(1.0)))
+        if int(t.count(1.0)) != int(len(links)):
+            double += 1
+        else:
+            double = 0
         num += 1
 
     # with open('PRISM_boxes.csv', 'w') as f:
@@ -273,9 +290,6 @@ def checkAll(center, boxes):
         length2 = len(center[i])
         for j in range(length2) :
             dif[i].append( center[i][j] - oldcenter[i][j] )
-
-    reader = open('../data/FDGIB/data.json', 'r')
-    data= json.load(reader)
     length = len(data['nodes'])
     for i in range(length):
         for j in range(2):
@@ -290,30 +304,51 @@ def checkAll(center, boxes):
         dic['dx'] = i[2]*2
         dic['dy'] = i[3]*2
         boxesCoo.append(dic)
+    dic = {}
+    dic['x'] = 0
+    dic['y'] = 0
+    dic['dx'] = width
+    dic['dy'] = height
+    boxesCoo.append(dic)
     data['groups'] = boxesCoo
+    del data['boxes']
 
-    f = open('../data/FDGIB/PRISM.json', 'w')
+    f = open(out + str(data['file']), 'w')
     json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
+    # import pylab as pl
+    # pl.xticks([0, width])
+    # pl.yticks([0, height])
+    # for i in center:
+    #     # if i[2] == 15:
+    #     pl.gca().add_patch( pl.Rectangle(xy=[i[0]-i[2], height - i[1]-i[3]], width=i[2]*2, height=i[3]*2, linewidth='1.0', fill=False) )
+    # pl.show()
 
 
-if __name__ == '__main__':
-    width = 900
-    height = 600
+
+def main(data, out):
     center = []
     links = []
     boxes = []
-    makeData(center, links,boxes)
-    import pylab as pl
-    pl.xticks([0, width])
-    pl.yticks([0, height])
+    makeData(center, links, boxes, data)
     checkPRISM(center, links, boxes)
-    checkAll(center, boxes)
+    checkAll(center, boxes, data)
 
-    import pylab as pl
-    pl.xticks([0, width])
-    pl.yticks([0, height])
-    for i in center:
-        # if i[2] == 15:
-        pl.gca().add_patch( pl.Rectangle(xy=[i[0]-i[2], height - i[1]-i[3]], width=i[2]*2, height=i[3]*2, linewidth='1.0', fill=False) )
-    pl.show()
+if __name__ == '__main__':
+    global width
+    global height
+    width = 1620.7
+    height = 1000
+    reader = open('../mock/fdData.json', 'r')
+    data = json.load(reader)
+
+    for i in data['coordinates']:
+        if i['id'] != 1:
+            # if i['dir'] == './12-0.0005-0.05/':
+            out = '../data/FDGIB/temp/' + i['dir'][2:] + ''
+            try:
+                a = os.listdir(out)
+            except:
+                os.mkdir(out)
+            main(i, out)
+            # sys.exit()

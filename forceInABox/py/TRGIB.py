@@ -10,11 +10,13 @@ if __name__ == '__main__':
         if (dir != '.DS_Store'):
             for file in os.listdir(main + dir):
                 if (dir != '.DS_Store'):
-                    path = main + dir + '/' + file
-                    graph = json.load(open(path))
-                    out = '../data/TRGIB/temp/' + dir + '/'
-                    try:
-                        a = os.listdir(out)
-                    except:
-                        os.mkdir(out)
-                    run(graph, width, height, out + file)
+                # if dir == '15-0.001-0.1':
+                    if file == '0.json' or file == '1.json' or file== '2.json':
+                        path = main + dir + '/' + file
+                        graph = json.load(open(path))
+                        out = '../data/TRGIB/temp/' + dir + '/'
+                        try:
+                            a = os.listdir(out)
+                        except:
+                            os.mkdir(out)
+                        run(graph, width, height, out + file)

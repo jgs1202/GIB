@@ -1,4 +1,4 @@
-# fdgib
+# mock
 
 > A Vue.js project
 

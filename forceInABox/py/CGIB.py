@@ -150,6 +150,9 @@ def croissant( mostConnect, data, groups, path, dir, file, width, heigh):
     forWrite['nodes'] = nodes
     forWrite['links'] = links
     forWrite['groups'] = groupCoo
+    forWrite['groupSize'] = data['groupSize']
+    forWrite['pgroup'] = data['pgroup']
+    forWrite['pout'] = data['pout']
 
     try:
         verify = os.listdir('../data/Chaturvedi/temp/' + dir)

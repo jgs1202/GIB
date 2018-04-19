@@ -20,15 +20,35 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       force: 0,
       svg: 0,
-      width: 900,
-      height: 600,
+      width: 1620.7,
+      height: 1000,
       color: 0,
+      graph: 0,
       useGroupInABox: true,
       drawTemplate: false,
       template: "force",
       node: 0,
       link: 0,
+      　
       groupingForce: 0,
+      dataNum: 0,
+      // mset: [12, 15, 18, 21],
+      mset: [12, 15, 18],
+      pgroupset: [0, 0.05, 0.1],
+      poutset: [0, 0.0005, 0.001],
+      // pgroupset: [0, 0.05, 0.1, 0.2],
+      // poutset: [0, 0.0005, 0.001],
+      m: 0,
+      pgroup: 0,
+      pout: 0,
+      path: 0,
+      dir: 0,
+      linkStrength: 0.1,
+      intraStrength: 0.2,
+      collideForce: -0.2,
+      chargeForce: -0.1,
+      tempStrength: 0.6,
+      radius: 100,
     }
   },
   mounted: function() {
@@ -48,7 +68,25 @@ export default {
       .attr("width", that.width)
       .attr("height", that.height);
 
+    while ((that.poutset[that.pout] == 0) && (that.pgroupset[that.pgroup] == 0)) {
+      console.log(that.m, that.pout, that.pgroup)
+      that.pout += 1
+      if (that.pout == that.poutset.length) {
+        that.pout -= that.poutset.length
+        that.pgroup += 1
+        if (that.pgroup == that.pgroupset.length) {
+          that.pgroup -= that.pgroupset.length
+          that.m += 1
+          if (that.m == that.mset.length) {
+            that.force.stop()
+          }
+        }
+      }
+      break
+    }
+
     that.reload()
+    console.log(that.linkStrength)
     // let stopVar = 0
     // window.onload = function() {
     //   document.getElementById('stopButton').addEventListener('click', clickStop, false)
@@ -80,18 +118,21 @@ export default {
       //remove all
       that.svg.selectAll(".link").remove();
       that.svg.selectAll(".node").remove();
-      that.svg.selectAll(".path").remove();
+      that.svg.selectAll(".rect").remove();
 
       that.force = d3.forceSimulation()
         .force("charge", d3.forceManyBody())
         .force("x", d3.forceX(that.width / 2).strength(0.05))
         .force("y", d3.forceY(that.height / 2).strength(0.05));
 
-      // console.log()
 
-      d3.json("./data/PRISM_data.json").then(function(graph) {
+      that.dir = './' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
+      that.path = './src/data/' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
+      console.log(that.path, that.dataNum)
+      d3.json(that.path + '' + that.dataNum + ".json").then(function(graph) {
+        that.graph = graph
         that.groupingForce = that.forceInABox()
-          .strength(0.1) // Strength to foci
+          .strength(that.tempStrength) // Strength to foci
           .template(that.template) // Either treemap or force
           .groupBy("group") // Node attribute to group
           .links(graph.links) // The graph links. Must be called after setting the grouping attribute
@@ -102,21 +143,22 @@ export default {
         // console.log(graph.toString())
         that.force
           .nodes(graph.nodes)
-          .force("group",  that.groupingForce)
+          .force("group", that.groupingForce)
           .force("link", d3.forceLink(graph.links)
             .distance(50)
+            // .distance(20)
             .strength(that.groupingForce.getLinkStrength)
           );
 
 
         that.link = that.svg.selectAll(".link")
           .data(graph.links)
-          .attr("class", "link")
           .enter().append("line")
-          .attr('stroke', d3.rgb(150,150,150))
+          .attr("class", "link")
+          .attr('stroke', d3.rgb(150, 150, 150))
           .attr("stroke-width", function(d) {
             // return Math.sqrt(1)
-            return 1
+            return 0.3
           });
 
         that.node = that.svg.selectAll(".node")
@@ -125,7 +167,7 @@ export default {
           .attr("class", "node")
           .attr("r", 5)
           .style("fill", function(d) {
-            return d3.interpolateRainbow(d.group / graph.groups.length);
+            return d3.interpolateRainbow(d.group / that.mset[that.m]);
           })
           .call(d3.drag()
             .on("start", that.dragstarted)
@@ -158,9 +200,6 @@ export default {
               return d.y;
             });
         });
-        console.log(' link is ')
-        var selection = d3.selectAll("svg")
-        console.log(selection)
 
         d3.select("#checkGroupInABox").on("change", function() {
           that.force.stop();
@@ -172,6 +211,7 @@ export default {
             // }))
             .force("group").enableGrouping(that.useGroupInABox)
 
+          that.force.stop()
           that.force.alphaTarget(0.5).restart();
         });
 
@@ -181,7 +221,6 @@ export default {
           that.force.force("group").template(that.template);
           that.force.alphaTarget(0.5).restart();
         });
-
         d3.select("#checkShowTreemap").on("change", function() {
           that.drawTemplate = d3.select("#checkShowTreemap").property("checked");
           if (that.drawTemplate) {
@@ -194,6 +233,7 @@ export default {
     },
     forceInABox: function(alpha) {
       let that = this
+
       function index(d) {
         return d.index;
       }
@@ -206,8 +246,9 @@ export default {
         forceCharge = -2,
         foci = {},
         // oldStart = force.start,
-        linkStrengthIntraCluster = 0.1,
-        linkStrengthInterCluster = 0.01,
+        linkStrengthIntraCluster = that.intraStrength,
+        linkStrengthInterCluster = that.linkStrength,
+        // linkStrengthInterCluster = 0.01,
         // oldGravity = force.gravity(),
         templateNodes = [],
         offset = [0, 0],
@@ -472,13 +513,15 @@ export default {
           .force("x", d3.forceX(size[0] / 2).strength(0.5))
           .force("y", d3.forceY(size[1] / 2).strength(0.5))
           .force("collide", d3.forceCollide(function(d) {
-            return d.size * nodeSize;
+            return d.size * nodeSize * that.collideForce;
           }))
           .force("charge", d3.forceManyBody().strength(function(d) {
-            return forceCharge * d.size;
+            return forceCharge * d.size * that.chargeForce;
           }))
           .force("links", d3.forceLink(!net.nodes ? net.links : []))
           .on('end', onEnd)
+
+        templateForce.force('collide').radius(that.radius)
 
         templateNodes = templateForce.nodes();
 
@@ -582,6 +625,7 @@ export default {
             max = area[i]
           }
         }
+        max = 600
         // console.log(max, area)
         for (let i = 0; i < area.length; i++) {
           // if (area[i] === max){
@@ -639,6 +683,7 @@ export default {
               "y": data.boxes[i][0]
             }
           ]
+
           // console.log('coo is ' + '' + coo[0]['x'])
           var lineFunc = d3.line()
             .x(function(d) {
@@ -649,21 +694,83 @@ export default {
             });
           // console.log(this.svg)
           that.svg.append('path')
+            .attr('class', 'rect')
             .attr('d', lineFunc(coo))
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
             .attr('fill', 'none')
           // .attr('id', i)
         }
-        data.links = links
-        data.id = 0
+
+        // console.log(data.boxes)
+        let groupData = []
+        for (let corner = 0; corner < data.boxes.length; corner++) {
+          let cood = {}
+          cood.one = data.boxes[corner][0]
+          cood.two = data.boxes[corner][1]
+          cood.three = data.boxes[corner][2]
+          cood.four = data.boxes[corner][3]
+          groupData.push(cood)
+        }
+        data.boxes = groupData
+        data.links = []
+        for (let j = 0; j < links.length; j++) {
+          let dic = {}
+          dic.source = links[j].source.index
+          dic.target = links[j].target.index
+          dic.value = links[j].value
+          data.links.push(dic)
+          // console.log(links[j].source)
+        }
+        console.log(that)
+        data.pgroup = that.graph.pgroup
+        data.pout = that.graph.pout
+        data.groupSize = that.graph.groupSize
+        data.dir = that.dir
+        data.file = '' + that.dataNum + '.json'
+        data.id = that.path + '' + that.dataNum + '.json'
         fetch('http://localhost:3000/coordinates', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(res => res.json()).then(console.log);
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        }).then(res => res.json()).then(console.log);
+        that.dataNum += 1
+        console.log(that.dataNum)
+        if (that.dataNum == 10) {
+          that.dataNum -= 10
+          that.pout += 1
+          if (that.pout == that.poutset.length) {
+            that.pout -= that.poutset.length
+            that.pgroup += 1
+            if (that.pgroup == that.pgroupset.length) {
+              that.pgroup -= that.pgroupset.length
+              that.m += 1
+              if (that.m == that.mset.length) {
+                that.force.stop()
+              }
+            }
+          }
+        }
+
+        while ((that.poutset[that.pout] == 0) && (that.pgroupset[that.pgroup] == 0)) {
+          that.pout += 1
+          if (that.pout == that.poutset.length) {
+            that.pout -= that.poutset.length
+            that.pgroup += 1
+            if (that.pgroup == that.pgroupset.length) {
+              that.pgroup -= that.pgroupset.length
+              that.m += 1
+              if (that.m == that.mset.length) {
+                that.force.stop()
+              }
+            }
+          }
+        }
+
+        console.log(data)
+        that.reload()
         // downloadFile(data, 'data', 'json')
         // downloadFile(links, 'links', 'json')
         // downloadFile(tableToCsvString(data.boxes), 'boxes', 'csv')
@@ -677,7 +784,7 @@ export default {
 
       function drawTreemap(container) {
         container.selectAll(".cell").remove();
-        container.selectAll("cell")
+        container.selectAll(".cell")
           .data(templateNodes)
           .enter().append("svg:rect")
           .attr("class", "cell")
