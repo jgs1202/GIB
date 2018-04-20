@@ -625,7 +625,7 @@ export default {
             max = area[i]
           }
         }
-        max = 600
+        max = 1000
         // console.log(max, area)
         for (let i = 0; i < area.length; i++) {
           // if (area[i] === max){

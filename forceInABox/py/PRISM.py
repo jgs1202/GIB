@@ -311,18 +311,19 @@ def checkAll(center, boxes, data):
     dic['dy'] = height
     boxesCoo.append(dic)
     data['groups'] = boxesCoo
+    data['layout'] = 'FDGIB'
     del data['boxes']
 
-    f = open(out + str(data['file']), 'w')
-    json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+    # f = open(out + str(data['file']), 'w')
+    # json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
-    # import pylab as pl
-    # pl.xticks([0, width])
-    # pl.yticks([0, height])
-    # for i in center:
-    #     # if i[2] == 15:
-    #     pl.gca().add_patch( pl.Rectangle(xy=[i[0]-i[2], height - i[1]-i[3]], width=i[2]*2, height=i[3]*2, linewidth='1.0', fill=False) )
-    # pl.show()
+    import pylab as pl
+    pl.xticks([0, width])
+    pl.yticks([0, height])
+    for i in center:
+        # if i[2] == 15:
+        pl.gca().add_patch( pl.Rectangle(xy=[i[0]-i[2], height - i[1]-i[3]], width=i[2]*2, height=i[3]*2, linewidth='1.0', fill=False) )
+    pl.show()
 
 
 
