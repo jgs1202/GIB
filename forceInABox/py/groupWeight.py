@@ -34,26 +34,21 @@ def test(path, dir, file):
 	for i in links:
 		# print(i)
 		source = data['nodes'][i['source']]['group']
-		# print(source)
 		target = data['nodes'][i['target']]['group']
-		# print("source" + str(source) + ', target:' + str(target))
 		if source != target:
 
 			if source < target:
 				if linkNum[source][target-source]  == 0:
-					# print('empty')
 					linkNum[source][target-source] = 1
 				else:
 					linkNum[source][target-source] += 1
 			else:
 				if linkNum[target][source-target]  == 0:
-					# print('empty')
 					linkNum[target][source-target] = 1
 				else:
 					linkNum[target][source-target] += 1
 
 	max = linkNum[0][0]
-	# print(max)
 	for i in linkNum:
 		for j in i:
 			if j>max:
@@ -64,7 +59,6 @@ def test(path, dir, file):
 			length2 = len(linkNum[i])
 			for j in range(length2):
 				linkNum[i][j] /= max
-	# print(linkNum)
 
 	length = boxNum
 	Gskew = [ 0.0 for i in range(length)]

@@ -111,7 +111,7 @@ def readjson(path, dir, file):
         type = 'CGIB'
         croissant(mostConnect, data, groups, path, dir, file, width, height)
     # print(Gmax, mostConnect, G_skewness, maxIndex)
-    print(type)
+    # print(type)
     # print(Gmax, mostConnect, G_skewness, maxIndex, type)
 
     # sys.exit()
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     num = 0
     for dir in os.listdir(main):
         if (dir != '.DS_Store'):
-            # try:
+            print(dir)
             for file in os.listdir(main + dir):
                 # print(file)
                 # dir = "18-0.0005-0.05"
