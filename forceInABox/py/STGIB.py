@@ -75,7 +75,7 @@ def ST(data, groups, path, dir, file, width, height, use):
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 if __name__ == '__main__':
-    main = '../data/origin/'
+    main = '../data/origin/STGIB/'
     width = 960
     height = 600
     num = 0

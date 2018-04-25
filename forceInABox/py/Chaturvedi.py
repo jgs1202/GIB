@@ -6,6 +6,7 @@ import sys
 from DGIB import doughnut
 from CGIB import croissant
 from STGIB import ST
+from operator import itemgetter
 
 def readjson(path, dir, file):
     reader = open(path, 'r')
@@ -52,6 +53,7 @@ def readjson(path, dir, file):
                 else:
                     Gskew[target][source-target] += 1
 
+
     max = Gskew[0][0]
     length1 = len(Gskew)
     maxIndex = []
@@ -61,6 +63,7 @@ def readjson(path, dir, file):
             if Gskew[i][j] > max:
                 max = Gskew[i][j]
                 maxIndex = [i, j+i]
+
     G_skewness = max
     # if max != 0:
     #     for i in range(length1):
@@ -91,34 +94,67 @@ def readjson(path, dir, file):
                     if k == i-j:
                         if float(Gskew[j][k]) != 0.0:
                             Gdegree[i] += 1
-    max = 0
-    mostConnect = []
-    for i in range(length):
-        if max < Gdegree[i]:
-            max = Gdegree[i]
-            mostConnect = [i]
-        elif max == Gdegree[i]:
-            mostConnect.append(i)
-    Gmax = max
-    if Gmax <= 3 or G_skewness < 0.1:
+    for i in range(len(Gdegree)):
+        Gdegree[i] = [i, int(Gdegree[i])]
+    # max = 0
+    # mostConnect = []
+    # for i in range(length):
+    #     if max < Gdegree[i][1]:
+    #         max = Gdegree[i][1]
+    #         mostConnect = [i]
+    #     elif max == Gdegree[i][1]:
+    #         mostConnect.append(i)
+    # Gmax = max
+    Gdegree.sort(key=itemgetter(1), reverse=True)
+
+
+    Gmax = 'null'
+    nodesOfMax = []
+    # print(Gdegree)
+    for aGroup in Gdegree:
+        if Gmax != int(aGroup[1]):
+            if len(nodesOfMax) != 0:
+                nodesOfMax.sort(key=itemgetter(1), reverse=True)
+                tempDegree = []
+                for i in range(len(nodesOfMax)):
+                    for j in range(len(groups)):
+                        if nodesOfMax[i][0] == Gdegree[j][0]:
+                            tempDegree.append(Gdegree[j])
+                            break
+                targetIndex = tempDegree[0][1]
+                for i in range(len(Gdegree)):
+                    if Gdegree[i][1] == targetIndex:
+                        startingPoint = i
+                        # print(startingPoint)
+                        break
+                for i in range(startingPoint, startingPoint + len(tempDegree)):
+                    Gdegree[i] = tempDegree[i-startingPoint]
+                nodesOfMax = []
+            nodesOfMax.append([ aGroup[0], len(groups[aGroup[0]]) ] )
+            Gmax = int(aGroup[1])
+        else:
+            nodesOfMax.append([ aGroup[0], len(groups[aGroup[0]]) ] )
+    # print(Gdegree)
+    # print(Gmax)
+
+    #################### G-skewness ##############
+    G_skewness = ( len(groups[Gdegree[0][1]]) + len(groups[Gdegree[1][1]])) / len(data['nodes'])
+
+    if len(groups) <= 3 or G_skewness < 0.1:
         type = 'STGIB'
         use = 'Chaturvedi'
         ST(data, groups, path, dir, file, width, height, use)
-    elif Gmax > 3 and G_skewness >= 0.1 and G_skewness <= 0.45:
+    elif len(groups) > 3 and G_skewness >= 0.1 and G_skewness <= 0.45:
         type = 'DGIB'
-        doughnut(mostConnect, data, groups, path, dir, file, width, height)
-    elif Gmax > 3 and G_skewness > 0.45:
+        doughnut(data, groups, path, dir, file, width, height, Gdegree)
+    elif len(groups) > 3 and G_skewness > 0.45:
         type = 'CGIB'
-        croissant(mostConnect, data, groups, path, dir, file, width, height)
-    # print(Gmax, mostConnect, G_skewness, maxIndex)
-    # print(type)
-    # print(Gmax, mostConnect, G_skewness, maxIndex, type)
-
+        croissant(data, groups, path, dir, file, width, height, Gdegree)
     # sys.exit()
 
 
 if __name__ == '__main__':
-    main = '../data/origin/'
+    main = '../data/origin/Chaturvedi/'
     global width
     global height
     width = 960

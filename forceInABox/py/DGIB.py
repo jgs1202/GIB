@@ -10,29 +10,42 @@ import copy
 import os
 import sys
 
-def doughnut( mostConnect, data, groups, path, dir, file, width, height):
+def doughnut( data, groups, path, dir, file, width, height, Gdegree):
     center = []
     total = 0
     length = len(groups)
-    groupSize = []
+
     for i in range(length):
         total += len(groups[i])
+    # for i in range(length):
+    #     dic = {}
+    #     dic['size'] = (len(groups[i])/total)
+    #     dic['index'] = i
+    #     groupSize.append(dic)
+
+    #make lisk 'groupSize' along Gdegree
+    groupSize = []
     for i in range(length):
         dic = {}
-        dic['size'] = (len(groups[i])/total)
-        dic['index'] = i
+        dic['size'] = (len(groups[Gdegree[i][0]])/total)
+        dic['index'] = Gdegree[i][0]
+        dic['connect'] = Gdegree[i][1]
         groupSize.append(dic)
+    # for i in groupSize:
+    #     for j in range(len(groups)):
+    #         if Gdegree[j][0] == i['index']:
+    #                 print(Gdegree[j])
 
-    length = len(mostConnect)
-    maxSize = 0
-    for i in range(length):
-        if groupSize[i]['size'] > groupSize[maxSize]['size']:
-            maxSize = i
-
-    top = copy.deepcopy(groupSize[maxSize])
-    del groupSize[maxSize]
-    groupSize.sort(key=itemgetter('size'), reverse = True )
-    groupSize.insert(0, top)
+    # length = len(groups)
+    # maxSize = 0
+    # for i in range(length):
+    #     if groupSize[i]['size'] > groupSize[maxSize]['size']:
+    #         maxSize = i
+    #
+    # top = copy.deepcopy(groupSize[maxSize])
+    # del groupSize[maxSize]
+    # groupSize.sort(key=itemgetter('size'), reverse = True )
+    # groupSize.insert(0, top)
 
     length = len(groups)
     verify = 0
@@ -48,6 +61,7 @@ def doughnut( mostConnect, data, groups, path, dir, file, width, height):
         while(verify == 0) and CorD < length * 10:
             if i == 0:
                 # print('case0')
+                print(GS[i]['connect'])
                 w = width * math.sqrt(GS[i]['size'])
                 h = height * math.sqrt(GS[i]['size'])
                 center.append( [ GS[i]['index'], width/2, height/2, w/2, h/2 ] )

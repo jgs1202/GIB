@@ -34,8 +34,8 @@ export default {
       dataNum: 0,
       // mset: [12, 15, 18, 21],
       mset: [12, 15, 18],
-      pgroupset: [0, 0.05, 0.1],
-      poutset: [0, 0.0005, 0.001],
+      pgroupset: [0, 0.05, 0.1, 0.2],
+      poutset: [0, 0.001, 0.002],
       // pgroupset: [0, 0.05, 0.1, 0.2],
       // poutset: [0, 0.0005, 0.001],
       m: 0,
@@ -729,6 +729,11 @@ export default {
         data.dir = that.dir
         data.file = '' + that.dataNum + '.json'
         data.id = that.path + '' + that.dataNum + '.json'
+        data.mostConnected = that.graph.mostConnected
+        data.nodeMax = that.graph.nodeMax
+        data.nodeMin = that.graph.nodeMin
+        data.linkMax = that.graph.linkMax
+        data.linkMin = that.graph.linkMin
         fetch('http://localhost:3000/coordinates', {
           method: 'POST',
           headers: {

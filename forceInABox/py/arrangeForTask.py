@@ -1,5 +1,6 @@
 import os
 import json
+from setAnswer import calc
 
 def arrange():
     inputPath = []
@@ -24,6 +25,8 @@ def arrange():
                     print(dir, file)
                     order = order % 4
                     data = json.load( open(i + dir + '/' + file, 'r') )
+                    data = calc(data)
+                    data['type'] = i[8:13]
                     f = open( outputPath[order] + str(num) + '.json', 'w')
                     json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
                     order += 1

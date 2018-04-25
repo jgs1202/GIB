@@ -3,94 +3,124 @@ from operator import itemgetter
 import json
 import os
 import sys
+import numpy as np
 
 def makeData():
-    eachNum = 10
-
+    eachNum = 40
+    output = ['STGIB', 'Chaturvedi', 'FDGIB', 'TRGIB']
     mset = [12, 15, 18]
+    thre = 0.2
+    nodeThre = 0.7
     nmin = 10
     nmax = 30
     pin = 0.2
     pbridge = 0.05
-    pgroupset = [0, 0.05, 0.1, 0.2]
-    poutset = [0, 0.0005, 0.001]
+    # pgroupset = [ 0, 0.05, 0.1, 0.2]
+    pgroup = 0.1
+    # poutset = [0, 0.001, 0.002]
+    pout = 0.002
 
-    total = len(mset) * len(pgroupset) * len(poutset)
+    pin = pin * thre
+    pbridge = round(pbridge * thre, 4)
+    # pgroup = round(pgroup * thre, 3)
+    pout = round(pout * thre, 5)
+
+
+    ############## normal distribution #####################
+    muGroup, sigmaGroup = 11.4, 5.4
+    muSize, sigmaSize = 52.5, 35.3
+    s1 = np.random.normal(muGroup, sigmaGroup, 2)
+    s2 = np.random.normal(muSize, sigmaSize, 2)
+
+    # total = len(mset) * len(pgroupset) * len(poutset)
+    total = 4
 
     for i in range(total):
+        print('step = ' + str(i))
         for each in range(eachNum):
             verify = False
             while verify == False:
-                if each == 0:
-                    m = mset[ int( i /( len(pgroupset) * len(poutset)) ) ]
-                    pout = poutset[ i % len(poutset) ]
-                    pgroup = pgroupset[ (int( i / len(poutset) )) % len(pgroupset) ]
-                    print(m, pgroup, pout)
-
-                if pgroup != 0 or pout != 0:
-
+                # if each == 0:
+                    # m = mset[ int( i /( len(pgroupset) * len(poutset)) ) ]
+                    # pout = poutset[ i % len(poutset) ]
+                    # pgroup = pgroupset[ (int( i / len(poutset) )) % len(pgroupset) ]
+                m = 0
+                while m < 6 or m > 17:
+                    m = np.random.normal(11.4, 5.4, 1)
+                    m = round(m[0]).astype(np.int32)
+                if pgroup == 0 and pout == 0:
+                    verify = True
+                elif pgroup != 0 or pout != 0:
                     nodes = []
-                    for i in range(m):
+                    for l in range(m):
                         nodes.append([])
 
                     num = 0
-                    for i in range(m):
-                        rand = random.randint(nmin, nmax)
+                    for l in range(m):
+                        # rand = random.randint(nmin, nmax)
+                        rand = np.random.normal(52.5, 35.3, 1)
+                        rand = round(rand[0]).astype(np.int32)
+                        if rand < 4:
+                            rand = 4
+                        rand *= nodeThre
+                        try:
+                            rand = round(rand).astype(np.int32)
+                        except:
+                            rand = int(rand)
                         for j in range(rand):
-                            nodes[i].append(num)
+                            nodes[l].append(num)
                             num += 1
 
                     links = []
                     total = 0
-                    for i in range(m):
+                    for l in range(m):
                         # links.append([])
-                        length = len (nodes[i])
-                        total += len(nodes[i])
+                        length = len (nodes[l])
+                        total += len(nodes[l])
                         for j in range( length ):
                             for k in range( length - j - 1):
                                 if random.random() < pin:
                                     dic = {}
-                                    dic['source'] = nodes[i][j]
-                                    dic['target'] = nodes[i][j+k+1]
+                                    dic['source'] = nodes[l][j]
+                                    dic['target'] = nodes[l][j+k+1]
                                     dic['value'] = 1
                                     links.append(dic)
 
                     # print(nodes)
-
-                    for i in range(m):
+                    for p in range(m):
                         length1 = len (nodes)
-                        length2 = len(nodes[i])
-                        for j in range( length1 - i -1 ):
+                        length2 = len(nodes[p])
+                        for j in range( length1 - p -1 ):
                             if random.random() < pgroup:
-                                length3 = len(nodes[i+j+1])
+                                length3 = len(nodes[p+j+1])
                                 for k in range( length2 ):
                                     for l in range(length3):
                                         if random.random() < pbridge:
                                             dic = {}
-                                            dic['source'] = nodes[i][k]
-                                            dic['target'] = nodes[i+j+1][l]
+                                            dic['source'] = nodes[p][k]
+                                            dic['target'] = nodes[p+j+1][l]
                                             dic['value'] = 1
                                             links.append(dic)
 
 
-                    for i in range(m):
+                    for p in range(m):
                         links.sort(key=itemgetter('source'))
 
                     # print(links)
                     # print(len(links))
 
                     current = 0
-                    for i in range(total):
-                        for j in range(total - i - 1):
+                    for p in range(total):
+                        for j in range(total - p - 1):
                             if current == len(links):
                                 break
-                            elif links[current]['source'] == i and links[current]['target'] == i+j+1:
+                            elif links[current]['source'] == p and links[current]['target'] == p+j+1:
                                 current += 1
                             else:
                                 if random.random() < pout:
                                     dic = {}
-                                    dic['source'] = i
-                                    dic['target'] = i+j+1
+                                    dic['source'] = p
+                                    dic['target'] = p+j+1
                                     dic['value'] = 1
                                     links.append( dic )
                                     current += 1
@@ -99,12 +129,12 @@ def makeData():
 
                     nodes_for_write = []
                     length = len(nodes)
-                    for i in range(length):
-                        lengthG = len(nodes[i])
+                    for p in range(length):
+                        lengthG = len(nodes[p])
                         for j in range(lengthG):
                             dic = {}
-                            dic['index'] = nodes[i][j]
-                            dic['group'] = i
+                            dic['index'] = nodes[p][j]
+                            dic['group'] = p
                             nodes_for_write.append(dic)
 
                     data = {}
@@ -118,20 +148,38 @@ def makeData():
 
                     calc(data, m)
 
-
-                    try:
-                        dir =  os.listdir('../data/origin/' + str(m) + '-' + str(pgroup) + '-' + str(pout))
-                    except:
-                        os.mkdir('../data/origin/' + str(m) + '-' + str(pgroup) + '-' + str(pout))
+                    # try:
+                    #     dir =  os.listdir('../data/origin/' + str(11.4) + '-' + str(pgroup) + '-' + str(pout))
+                    # except:
+                    #     os.mkdir('../data/origin/' + str(11.4) + '-' + str(pgroup) + '-' + str(pout))
 
                     if len(data['mostConnected']) == 1:
-                        verify = True
-                        print(each)
-                        f = open('../data/origin/' + str(m) + '-' + str(pgroup) + '-' + str(pout) + '/' + str(each) + '.json', 'w')
-                        json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+                        try:
+                            a=data['nodeMax']
+                            # print('nodeMax')
+                            a=data['nodeMin']
+                            # print('nodeMin')
+                            a=data['linkMax']
+                            # print('linkMax')
+                            a=data['linkMin']
+                            # print('linkMin')
+                            verify = True
+                            # print(each)
+                            # f = open('../data/origin/' + str(11.4) + '-' + str(pgroup) + '-' + str(pout) + '/' + str(each) + '.json', 'w')
+                            f = open('../data/origin/' + output[i] +'/' + str(each) + '.json', 'w')
+                            intM = 0
+                            for p in range(m+1):
+                                if p == m:
+                                    intM = p
+                            print( len(data['nodes']), len(data['links']))
+                            data['groupSize'] = intM
+                            json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+                        except:
+                            pass
 
                     else:
-                        print('minus')
+                        pass
+                        # print(data['mostConnected'])
                 # f = open('../data/links.json', 'w')
                 # json.dump(links, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
@@ -191,10 +239,18 @@ def calc(data, m):
             linkGroup[srcGroup][1] += 1
     linkGroup.sort(key=itemgetter(1), reverse=True)
     nodeGroup.sort(key=itemgetter(1), reverse=True)
-    data['nodeMax'] = nodeGroup[2][0]
-    data['nodeMin'] = nodeGroup[-3][0]
-    data['linkMax'] = linkGroup[2][0]
-    data['linkMin'] = linkGroup[-3][0]
+    if nodeGroup[1][1] > nodeGroup[2][1] and nodeGroup[2][1] > nodeGroup[3][1]:
+        data['nodeMax'] = nodeGroup[2][0]
+    if nodeGroup[-2][1] < nodeGroup[-3][1] and nodeGroup[-3][1] < nodeGroup[-4][1]:
+        data['nodeMin'] = nodeGroup[-3][0]
+    if linkGroup[0][1] > linkGroup[1][1]:
+        data['linkMax'] = linkGroup[0][0]
+    if linkGroup[-1][1] < linkGroup[-2][1]:
+        data['linkMin'] = linkGroup[-1][0]
 
 if __name__ == '__main__':
     makeData()
+    cmds = [ 'python STGIB.py', 'python Chaturevedi.py']
+    for i in cmds:
+        cmd = i
+    os.system(cmd)

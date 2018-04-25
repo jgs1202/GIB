@@ -10,28 +10,27 @@ import copy
 import os
 import sys
 
-def croissant( mostConnect, data, groups, path, dir, file, width, heigh):
+def croissant(data, groups, path, dir, file, width, heigh, Gdegree):
     center = []
     total = 0
     length = len(groups)
     for i in range(length):
         total += len(groups[i])
+
+
+    # length = len(groups)
+    # maxSize = 0
+    # for i in range(length):
+    #     if groupSize[i] > groupSize[maxSize]:
+    #         maxSize = i
+
+    #make lisk 'groupSize' along Gdegree
+    groupSize = []
     for i in range(length):
         dic = {}
-        dic['size'] = (len(groups[i])/total)
-        dic['index'] = i
+        dic['size'] = (len(groups[Gdegree[i][0]])/total)
+        dic['index'] = Gdegree[i][0]
         groupSize.append(dic)
-
-    length = len(mostConnect)
-    maxSize = 0
-    for i in range(length):
-        if groupSize[i] > groupSize[maxSize]:
-            maxSize = i
-
-    top = copy.deepcopy(groupSize[maxSize])
-    del groupSize[maxSize]
-    groupSize.sort(key=itemgetter('size'), reverse = True )
-    groupSize.insert(0, top)
 
     length = len(groups)
     verify = 0
