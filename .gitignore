@@ -1,6 +1,7 @@
 /2017gib-reordering/
 *.csv
 *.json
+!package.json
 **/*.rs.bk
 *.txt
 /forceInABox/node_modules/
