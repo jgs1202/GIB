@@ -227,28 +227,6 @@ def checkAll(center, boxes, data):
             else:
                 dic['key'] = 'y'
                 dic['value'] = yover
-            # if xover < yover:
-            #     if ex!='x' or exex!='x':
-            #         which['key'] = 'x'
-            #         which['value'] = xover
-            #         exex = ex
-            #         ex = 'x'
-            #     else:
-            #         exex = ex
-            #         ex = 'y'
-            #         which['key'] = 'y'
-            #         which['value'] = yover
-            # else:
-            #     if ex != 'y':
-            #         exex = ex
-            #         ex = 'y'
-            #         which['key'] = 'y'
-            #         which['value'] = yover
-            #     else:
-            #         which['key'] = 'x'
-            #         which['value'] = xover
-            #         exex = ex
-            #         ex = 'x'
             if dic['value'] > 1.0:
                 t[i] = dic['value']
                 if dic['key']=='y' and ex=='y':
