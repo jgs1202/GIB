@@ -1,8 +1,9 @@
 /2017gib-reordering/
 *.csv
 *.json
-rust-fd-layout/target/
 **/*.rs.bk
-rust-fd-layout/Cargo.lock
 *.txt
 /forceInABox/data/
+forceInABox/node_modules/
+computational/node_modules/
+/trgib/
