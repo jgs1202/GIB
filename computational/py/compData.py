@@ -7,7 +7,7 @@ import sys
 import numpy as np
 
 def makeData():
-    eachNum = 5
+    eachNum = 50
     mset = [8, 11, 14, 17]
     thre = 0.1
     pin = 0.2
@@ -128,7 +128,7 @@ def makeData():
                     if p == m:
                         intM = p
                 data['groupSize'] = intM
-                print(len(data['links']))
+                # print(len(data['links']))
                 json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 def calc(data, m):
