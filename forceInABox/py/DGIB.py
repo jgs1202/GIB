@@ -58,10 +58,10 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
         i = 0
         CorD = 0
         sequence  = 0
-        while(verify == 0) and CorD < length * 10:
+        while(verify == 0) and (CorD < length * 100):
             if i == 0:
                 # print('case0')
-                print(GS[i]['connect'])
+                # print(GS[i]['connect'])
                 w = width * math.sqrt(GS[i]['size'])
                 h = height * math.sqrt(GS[i]['size'])
                 center.append( [ GS[i]['index'], width/2, height/2, w/2, h/2 ] )
@@ -74,7 +74,7 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
             elif i%4 == 1:
                 h = height/2 - center[0][4]
                 w = width * height * GS[i]['size'] / h
-                if max([w/h, h/w]) < 10:
+                if max([w/h, h/w]) < 100:
                     # print('case1')
                     if h1LT[0] + w > width:
                         # print('case11')
@@ -87,10 +87,11 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
                 else:
                     # print('case2')
                     GS.insert(i,'dummy')
+                    sequence += 1
             elif i%4 == 2:
                 h = height/2 - center[0][4]
                 w = width * height * GS[i]['size'] / h
-                if max([w/h, h/w]) < 10:
+                if max([w/h, h/w]) < 100:
                     # print('case3')
                     if h2LT[0] + w > width:
                         # print('case12')
@@ -103,10 +104,11 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
                 else:
                     # print('case4')
                     GS.insert(i,'dummy')
+                    sequence += 1
             elif i%4 == 3:
                 w = v1RT[0]
                 h = width * height * GS[i]['size'] / w
-                if max([w/h, h/w]) < 10:
+                if max([w/h, h/w]) < 100:
                     # print('case5')
                     if v1RT[1] + h > height:
                         # print('case13')
@@ -119,10 +121,11 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
                 else:
                     GS.insert(i, 'dummy')
                     # print('case6')
+                    sequence += 1
             elif i%4 == 0:
                 w = width - v2LT[0]
                 h = width * height * GS[i]['size'] / w
-                if max([w/h, h/w]) < 10:
+                if max([w/h, h/w]) < 100:
                     # print('case7')
                     # print(v2LT[1] , h , height - h2LT[1])
                     if v2LT[1] + h >  h2LT[1]:
@@ -132,23 +135,24 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
                     else:
                         center.append( [ GS[i]['index'], v2LT[0] + w/2 , v2LT[1] + h/2, w/2, h/2 ] )
                         v2LT[1] = v2LT[1] + h
-                        sequence
+                        sequence = 0
                 else:
                     GS.insert(i, 'dummy')
+                    sequence += 1
                     # print('case8')
             # else:
                 # print('error')
             if sequence > 3:
                 for j in range(len(groupSize)):
                     groupSize[j]['size'] = groupSize[j]['size'] * 0.9
-                # print('over')
+                print('over')
                 break
             # print( str(i) + ' : '+ str(center[i]) )
             if i == len(GS) - 1 :
                 verify = 1
             i += 1
             CorD += 1
-            if CorD == length*10:
+            if CorD == length*100:
                 print('This data is not suited to Doughunt layout.')
                 sys.exit()
         num += 1
@@ -188,11 +192,15 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
     forWrite['linkMax'] = data['linkMax']
     forWrite['linkMin'] = data['linkMin']
 
+    print(len(forWrite['groups'])-1, data['groupSize'], len(groupSize))
     try:
-        verify = os.listdir('../data/Chaturvedi/temp/' + dir)
+        # verify = os.listdir('../data/Chaturvedi/temp/' + dir)
+        verify = os.listdir('../data/Chaturvedi/temp/')
     except:
-        os.mkdir('../data/Chaturvedi/temp/' + dir)
-    f = open('../data/Chaturvedi/temp/' + dir + '/' + file, 'w')
+        # os.mkdir('../data/Chaturvedi/temp/' + dir)
+        os.mkdir('../data/Chaturvedi/temp/')
+    # f = open('../data/Chaturvedi/temp/' + dir + '/' + file, 'w')
+    f = open('../data/Chaturvedi/temp/' + file, 'w')
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
     # import pylab as pl

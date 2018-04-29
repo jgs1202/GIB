@@ -68,10 +68,14 @@ def ST(data, groups, path, dir, file, width, height, use):
     forWrite['linkMin'] = data['linkMin']
 
     try:
-        verify = os.listdir('../data/' + use  + '/temp/' + dir)
+        # verify = os.listdir('../data/' + use  + '/temp/' + dir)
+        verify = os.listdir('../data/' + use  + '/temp/')
     except:
-        os.mkdir('../data/' + use  + '/temp/' + dir)
-    f = open('../data/' + use  + '/temp/' + dir + '/' + file, 'w')
+        # os.mkdir('../data/' + use  + '/temp/' + dir)
+        os.mkdir('../data/' + use  + '/temp/')
+    # f = open('../data/' + use  + '/temp/' + dir + '/' + file, 'w')
+    print('../data/' + use  + '/temp/' + file)
+    f = open('../data/' + use  + '/temp/' + file, 'w')
     json.dump(forWrite, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
 if __name__ == '__main__':
@@ -79,34 +83,35 @@ if __name__ == '__main__':
     width = 960
     height = 600
     num = 0
-    for dir in os.listdir(main):
-        if (dir != '.DS_Store'):
+    dir = False
+    for file in os.listdir(main):
+        if file != '.DS_Store':
             # try:
-            for file in os.listdir(main + dir):
+            # for file in os.listdir(main + dir):
                 # print(file)
                 # dir = "18-0.0005-0.05"
-                if (dir != '.DS_Store'):
-                    num += 1
-                    path = main + dir + '/' + file
-                    width = 960
-                    height = 600
-                    reader = open(path, 'r')
-                    data = json.load(reader)
-                    nodes = data['nodes']
-                    length = len(nodes)
-                    maxGroup = 0
-                    # get length of group
-                    for i in range(length):
-                        current = nodes[i]['group']
-                        if current > maxGroup:
-                            maxGroup = current
-                    groups = [ [] for i in range(maxGroup+1)]
+            # if (dir != '.DS_Store'):
+            num += 1
+            # path = main + dir + '/' + file
+            path = main + file
+            width = 960
+            height = 600
+            reader = open(path, 'r')
+            data = json.load(reader)
+            nodes = data['nodes']
+            length = len(nodes)
+            maxGroup = 0
+            # get length of group
+            for i in range(length):
+                current = nodes[i]['group']
+                if current > maxGroup:
+                    maxGroup = current
+            groups = [ [] for i in range(maxGroup+1)]
+            # make list 'groups' a list have nodes' index
+            for i in range(length):
+                dic = {}
+                dic['number'] = i
+                groups[nodes[i]['group']].append(dic)
 
-                    # make list 'groups' a list have nodes' index
-                    for i in range(length):
-                        dic = {}
-                        dic['number'] = i
-                        groups[nodes[i]['group']].append(dic)
-
-                    use = 'STGIB'
-                    ST(data, groups, path, dir, file, width, height, use)
+            use = 'STGIB'
+            ST(data, groups, path, dir, file, width, height, use)

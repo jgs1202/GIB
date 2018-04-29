@@ -140,6 +140,7 @@ def readjson(path, dir, file):
     #################### G-skewness ##############
     G_skewness = ( len(groups[Gdegree[0][1]]) + len(groups[Gdegree[1][1]])) / len(data['nodes'])
 
+    print( len(groups), G_skewness)
     if len(groups) <= 3 or G_skewness < 0.1:
         type = 'STGIB'
         use = 'Chaturvedi'
@@ -150,6 +151,7 @@ def readjson(path, dir, file):
     elif len(groups) > 3 and G_skewness > 0.45:
         type = 'CGIB'
         croissant(data, groups, path, dir, file, width, height, Gdegree)
+    print(type)
     # sys.exit()
 
 
@@ -160,16 +162,16 @@ if __name__ == '__main__':
     width = 960
     height = 600
     num = 0
-    for dir in os.listdir(main):
+    # for dir in os.listdir(main):
+        # if (dir != '.DS_Store'):
+            # print(dir)
+    for file in os.listdir(main):
+        # print(file)
+        dir = False
         if (dir != '.DS_Store'):
-            print(dir)
-            for file in os.listdir(main + dir):
-                # print(file)
-                # dir = "18-0.0005-0.05"
-                if (dir != '.DS_Store'):
-                    # if num > 0:
-                    num += 1
-                    path = main + dir + '/' + file
-                    width = 960
-                    height = 600
-                    readjson(path, dir, file)
+            # if num > 0:
+            num += 1
+            path = main + file
+            width = 960
+            height = 600
+            readjson(path, dir, file)

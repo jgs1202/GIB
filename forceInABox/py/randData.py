@@ -133,7 +133,7 @@ def makeData():
                         lengthG = len(nodes[p])
                         for j in range(lengthG):
                             dic = {}
-                            dic['index'] = nodes[p][j]
+                            dic['name'] = nodes[p][j]
                             dic['group'] = p
                             nodes_for_write.append(dic)
 
@@ -171,7 +171,7 @@ def makeData():
                             for p in range(m+1):
                                 if p == m:
                                     intM = p
-                            print( len(data['nodes']), len(data['links']))
+                            # print( len(data['nodes']), len(data['links']))
                             data['groupSize'] = intM
                             json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
                         except:
@@ -239,18 +239,20 @@ def calc(data, m):
             linkGroup[srcGroup][1] += 1
     linkGroup.sort(key=itemgetter(1), reverse=True)
     nodeGroup.sort(key=itemgetter(1), reverse=True)
-    if nodeGroup[1][1] > nodeGroup[2][1] and nodeGroup[2][1] > nodeGroup[3][1]:
-        data['nodeMax'] = nodeGroup[2][0]
-    if nodeGroup[-2][1] < nodeGroup[-3][1] and nodeGroup[-3][1] < nodeGroup[-4][1]:
-        data['nodeMin'] = nodeGroup[-3][0]
+    if nodeGroup[0][1] > nodeGroup[1][1]:
+        data['nodeMax'] = nodeGroup[1][0]
+    if nodeGroup[-1][1] < nodeGroup[-2][1]:
+        data['nodeMin'] = nodeGroup[-1][0]
     if linkGroup[0][1] > linkGroup[1][1]:
         data['linkMax'] = linkGroup[0][0]
     if linkGroup[-1][1] < linkGroup[-2][1]:
         data['linkMin'] = linkGroup[-1][0]
+    # print(linkGroup[0][0], data['linkMax'])
+    # sys.exit()
 
 if __name__ == '__main__':
     makeData()
-    cmds = [ 'python STGIB.py', 'python Chaturevedi.py']
+    cmds = [ 'python STGIB.py', 'python Chaturvedi.py']
     for i in cmds:
         cmd = i
     os.system(cmd)

@@ -5,7 +5,7 @@ import json
 import sys
 import os
 
-def test(path, dir, file):
+def test(path, file):
 	# boxes = []
 	# f = open('../data/FDGIB/boxes.csv', 'r')
 	# reader1 = csv.reader(f)
@@ -76,42 +76,42 @@ def test(path, dir, file):
 						Gskew[i] += float(linkNum[j][k])
 	print(Gskew)
 
-	try:
-		verify = os.listdir('../data/origin-group-link/weight/' + dir)
-	except:
-		os.mkdir('../data/origin-group-link/weight/' + dir)
-	with open('../data/origin-group-link/weight/' + dir + '/' + file[:-5] +'.csv', 'w') as f:
+	# try:
+	# 	verify = os.listdir('../data/origin-group-link/weight/' + dir)
+	# except:
+	# 	os.mkdir('../data/origin-group-link/weight/' + dir)
+	with open('../data/origin-group-link/weight/' + file[:-5] +'.csv', 'w') as f:
 		writer = csv.writer(f) # 改行コード（\n）を指定しておく
 		for i in linkNum:
 			writer.writerow(i)
 
-	try:
-		verify = os.listdir('../data/origin-group-link/number/' + dir)
-	except:
-		os.mkdir('../data/origin-group-link/number/' + dir)
-	with open('../data/origin-group-link/number/' + dir + '/' + file[:-5] +'.csv', 'w') as f:
+	# try:
+	# 	verify = os.listdir('../data/origin-group-link/number/' + dir)
+	# except:
+	# 	os.mkdir('../data/origin-group-link/number/' + dir)
+	with open('../data/origin-group-link/number/' + file[:-5] +'.csv', 'w') as f:
 		writer = csv.writer(f) # 改行コード（\n）を指定しておく
 		writer.writerow(Gskew)
 
 if __name__ == '__main__':
-	main = '../data/origin/'
+	main = '../data/origin/FDGIB/'
 	# global dir
-	for dir in os.listdir(main):
-		if dir != '.DS_Store':
+	for file in os.listdir(main):
+		if file != '.DS_Store':
 			# try:
 				# global file
-			for file in os.listdir(main + dir):
-				print(file)
-				if file != '.DS_Store':
+			# for file in os.listdir(main + dir):
+			# 	print(file)
+			# 	if file != '.DS_Store':
 					# print(file)
 					# global path
-					path = main + dir + '/' + file
-					# print('test')
-					test(path, dir, file)
-				else:
-					print('error')
-			# except:
+			path = main + file
+			# print('test')
+			test(path, file)
+			# 	else:
+			# 		print('error')
+			# # except:
 			# 	print(dir,file)
 			# 	pass
-		else:
-			print('error')
+		# else:
+		# 	print('error')

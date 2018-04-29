@@ -13,15 +13,14 @@ import sys
 import decimal
 
 def makeData(center, links, boxes, data):
+    # print(data['links'])
     for i in data['boxes']:
         list = []
         list.extend([ i['one'], i['two'], i['three'], i['four'] ])
         boxes.append(list)
-
-    # print(boxes)
-
+    # print(len(data['boxes']))
     linkWeights = []
-    f = open('../data/origin-group-link/weight/' + data['dir'][2:] + data['file'][:-5] + '.csv', 'r')
+    f = open('../data/origin-group-link/weight/' + data['file'][:-5] + '.csv', 'r')
     reader2 = csv.reader(f)
     for i in reader2:
         linkWeights.append(i)
@@ -56,7 +55,9 @@ def checkPRISM(center, links, boxes):
     num = 0
     while num < 1000 and int(t.count(1.0)) != int(len(links)):
         t = []
-        which = {}
+        which = []
+        ex = 0
+        exex = 0
         length = len(links)
         excenter = copy.deepcopy(center)
         for i in range(length):
@@ -66,6 +67,8 @@ def checkPRISM(center, links, boxes):
         # print(center)
 
         for i in range(length):
+            dic = {}
+            # print(len(center), links[i]['node2'])
             if center[links[i]['node1']][0] != center[links[i]['node2']][0]:
                 xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
             else:
@@ -77,17 +80,24 @@ def checkPRISM(center, links, boxes):
             # print(xover, center[links[i]['node1']][2], center[links[i]['node2']][2] ,center[links[i]['node1']][0] , center[links[i]['node2']][0])
             # print(xover, yover)
             if xover < yover:
-                which['key'] = 'x'
-                which['value'] = xover
+                dic['key'] = 'x'
+                dic['value'] = xover
             else:
-                which['key'] = 'y'
-                which['value'] = yover
-            if which['value'] > 1.0:
-                t[i] = which['value']
+                dic['key'] = 'y'
+                dic['value'] = yover
+            if dic['value'] > 1.0:
+                t[i] = dic['value']
+                if dic['key']=='y' and ex=='y':
+                    dic['key'] = 'x'
+                elif dic['key']=='x' and ex=='x' and exex=='x':
+                    dic['ey'] = 'y'
+                exex = ex
+                ex = dic['key']
             else:
                 t[i] = 1.0
             if t[i] > 1.5:
                 t[i] = 1.5
+            which.append(dic)
 
         for i in range(length):
             if t[i]>1.0:
@@ -99,7 +109,7 @@ def checkPRISM(center, links, boxes):
                 dis2 = math.sqrt( math.pow((center[links[i]['node2']][0] - width/2), 2) + math.pow((center[links[i]['node2']][1] - height/2), 2) )
                 # print(dis1, dis2)
                 # print(which['key'])
-                if which['key'] == 'x':
+                if which[i]['key'] == 'x':
                     # print('xmove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][0] < center[links[i]['node2']][0]: #which direction should we move to
@@ -115,7 +125,7 @@ def checkPRISM(center, links, boxes):
                         else:
                             # print('4')
                             center[links[i]['node2']][0] = center[links[i]['node1']][0] + center[links[i]['node1']][2] + center[links[i]['node2']][2] + 10
-                elif which['key'] == 'y':
+                elif which[i]['key'] == 'y':
                     # print('ymove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][1] < center[links[i]['node2']][1]: #which direction should we move to
@@ -169,7 +179,8 @@ def checkPRISM(center, links, boxes):
 def checkAll(center, boxes, data):
     oldcenter = copy.deepcopy(center)
     links = []
-
+    ex = 0
+    exex =0
     # set viutual links
     length  = len(boxes)
     for i in range(length):
@@ -185,7 +196,9 @@ def checkAll(center, boxes, data):
     double = 0
     while num < 1000 and double != 2:
         t = []
-        which = {}
+        which = []
+        ex=0
+        exex= 0
         length = len(links)
         excenter = copy.deepcopy(center)
         for i in range(length):
@@ -195,6 +208,7 @@ def checkAll(center, boxes, data):
         # print(center)
 
         for i in range(length):
+            dic = {}
             if center[links[i]['node1']][0] != center[links[i]['node2']][0]:
                 xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
             else:
@@ -208,17 +222,46 @@ def checkAll(center, boxes, data):
             # print(xover, center[links[i]['node1']][2], center[links[i]['node2']][2] ,center[links[i]['node1']][0] , center[links[i]['node2']][0])
             # print(xover, yover)
             if xover < yover:
-                which['key'] = 'x'
-                which['value'] = xover
+                dic['key'] = 'x'
+                dic['value'] = xover
             else:
-                which['key'] = 'y'
-                which['value'] = yover
-            if which['value'] > 1.0:
-                t[i] = which['value']
+                dic['key'] = 'y'
+                dic['value'] = yover
+            # if xover < yover:
+            #     if ex!='x' or exex!='x':
+            #         which['key'] = 'x'
+            #         which['value'] = xover
+            #         exex = ex
+            #         ex = 'x'
+            #     else:
+            #         exex = ex
+            #         ex = 'y'
+            #         which['key'] = 'y'
+            #         which['value'] = yover
+            # else:
+            #     if ex != 'y':
+            #         exex = ex
+            #         ex = 'y'
+            #         which['key'] = 'y'
+            #         which['value'] = yover
+            #     else:
+            #         which['key'] = 'x'
+            #         which['value'] = xover
+            #         exex = ex
+            #         ex = 'x'
+            if dic['value'] > 1.0:
+                t[i] = dic['value']
+                if dic['key']=='y' and ex=='y':
+                    dic['key'] = 'x'
+                elif dic['key']=='x' and ex=='x' and exex=='x':
+                    dic['ey'] = 'y'
+                exex = ex
+                ex = dic['key']
             else:
                 t[i] = 1.0
             if t[i] > 1.5:
                 t[i] = 1.5
+            which.append(dic)
 
         for i in range(length):
             if t[i]>1.0:
@@ -230,7 +273,7 @@ def checkAll(center, boxes, data):
                 dis2 = math.sqrt( math.pow((center[links[i]['node2']][0] - width/2), 2) + math.pow((center[links[i]['node2']][1] - height/2), 2) )
                 # print(dis1, dis2)
                 # print(which['key'])
-                if which['key'] == 'x':
+                if which[i]['key'] == 'x':
                     # print('xmove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][0] < center[links[i]['node2']][0]: #which direction should we move to
@@ -246,7 +289,7 @@ def checkAll(center, boxes, data):
                         else:
                             # print('4')
                             center[links[i]['node2']][0] = center[links[i]['node1']][0] + center[links[i]['node1']][2] + center[links[i]['node2']][2] + 10
-                elif which['key'] == 'y':
+                elif which[i]['key'] == 'y':
                     # print('ymove')
                     if dis1 > dis2: #which group should we move
                         if center[links[i]['node1']][1] < center[links[i]['node2']][1]: #which direction should we move to
@@ -344,14 +387,16 @@ if __name__ == '__main__':
     height = 1000
     reader = open('../mock/fdData.json', 'r')
     data = json.load(reader)
-
     for i in data['coordinates']:
         if i['id'] != 1:
             # if i['dir'] == './12-0.0005-0.05/':
-            out = '../data/FDGIB/temp/' + i['dir'][2:] + ''
+            out = '../data/FDGIB/temp/'
+            print(i['file'])
             try:
                 a = os.listdir(out)
             except:
                 os.mkdir(out)
             main(i, out)
             # sys.exit()
+    cmd = 'python resize.py'
+    os.system(cmd)

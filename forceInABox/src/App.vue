@@ -68,22 +68,22 @@ export default {
       .attr("width", that.width)
       .attr("height", that.height);
 
-    while ((that.poutset[that.pout] == 0) && (that.pgroupset[that.pgroup] == 0)) {
-      console.log(that.m, that.pout, that.pgroup)
-      that.pout += 1
-      if (that.pout == that.poutset.length) {
-        that.pout -= that.poutset.length
-        that.pgroup += 1
-        if (that.pgroup == that.pgroupset.length) {
-          that.pgroup -= that.pgroupset.length
-          that.m += 1
-          if (that.m == that.mset.length) {
-            that.force.stop()
-          }
-        }
-      }
-      break
-    }
+    // while ((that.poutset[that.pout] == 0) && (that.pgroupset[that.pgroup] == 0)) {
+    //   console.log(that.m, that.pout, that.pgroup)
+    //   that.pout += 1
+    //   if (that.pout == that.poutset.length) {
+    //     that.pout -= that.poutset.length
+    //     that.pgroup += 1
+    //     if (that.pgroup == that.pgroupset.length) {
+    //       that.pgroup -= that.pgroupset.length
+    //       that.m += 1
+    //       if (that.m == that.mset.length) {
+    //         that.force.stop()
+    //       }
+    //     }
+    //   }
+    //   break
+    // }
 
     that.reload()
     console.log(that.linkStrength)
@@ -127,9 +127,9 @@ export default {
 
 
       that.dir = './' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
-      that.path = './src/data/' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
+      that.path = '../data/origin/FDGIB/'
       console.log(that.path, that.dataNum)
-      d3.json(that.path + '' + that.dataNum + ".json").then(function(graph) {
+      d3.json(that.path + that.dataNum + ".json").then(function(graph) {
         that.graph = graph
         that.groupingForce = that.forceInABox()
           .strength(that.tempStrength) // Strength to foci
@@ -727,7 +727,7 @@ export default {
         data.pout = that.graph.pout
         data.groupSize = that.graph.groupSize
         data.dir = that.dir
-        data.file = '' + that.dataNum + '.json'
+        data.file = that.graph.file
         data.id = that.path + '' + that.dataNum + '.json'
         data.mostConnected = that.graph.mostConnected
         data.nodeMax = that.graph.nodeMax
@@ -743,36 +743,36 @@ export default {
         }).then(res => res.json()).then(console.log);
         that.dataNum += 1
         console.log(that.dataNum)
-        if (that.dataNum == 10) {
-          that.dataNum -= 10
-          that.pout += 1
-          if (that.pout == that.poutset.length) {
-            that.pout -= that.poutset.length
-            that.pgroup += 1
-            if (that.pgroup == that.pgroupset.length) {
-              that.pgroup -= that.pgroupset.length
-              that.m += 1
-              if (that.m == that.mset.length) {
-                that.force.stop()
-              }
-            }
-          }
-        }
-
-        while ((that.poutset[that.pout] == 0) && (that.pgroupset[that.pgroup] == 0)) {
-          that.pout += 1
-          if (that.pout == that.poutset.length) {
-            that.pout -= that.poutset.length
-            that.pgroup += 1
-            if (that.pgroup == that.pgroupset.length) {
-              that.pgroup -= that.pgroupset.length
-              that.m += 1
-              if (that.m == that.mset.length) {
-                that.force.stop()
-              }
-            }
-          }
-        }
+        // if (that.dataNum == 10) {
+        //   that.dataNum -= 10
+        //   that.pout += 1
+        //   if (that.pout == that.poutset.length) {
+        //     that.pout -= that.poutset.length
+        //     that.pgroup += 1
+        //     if (that.pgroup == that.pgroupset.length) {
+        //       that.pgroup -= that.pgroupset.length
+        //       that.m += 1
+        //       if (that.m == that.mset.length) {
+        //         that.force.stop()
+        //       }
+        //     }
+        //   }
+        // }
+        //
+        // while ((that.poutset[that.pout] == 0) && (that.pgroupset[that.pgroup] == 0)) {
+        //   that.pout += 1
+        //   if (that.pout == that.poutset.length) {
+        //     that.pout -= that.poutset.length
+        //     that.pgroup += 1
+        //     if (that.pgroup == that.pgroupset.length) {
+        //       that.pgroup -= that.pgroupset.length
+        //       that.m += 1
+        //       if (that.m == that.mset.length) {
+        //         that.force.stop()
+        //       }
+        //     }
+        //   }
+        // }
 
         console.log(data)
         that.reload()
@@ -1028,6 +1028,11 @@ export default {
 </script>
 
 <style>
+
+body {
+  width: 90%;
+  height: 90%;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -1035,6 +1040,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  margin: auto;
+}
+
+svg {
+  margin: auto;
 }
 
 h1,

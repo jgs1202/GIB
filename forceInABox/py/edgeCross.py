@@ -3,6 +3,7 @@
 # size is 900*600
 
 import json
+import os
 from operator import itemgetter
 import math
 import csv
@@ -15,24 +16,31 @@ def edgeCross(data):
     links = data['links']
 
     length = len(links)
+    print(length)
     total = 0
 
     for i in range(length):
-        sx1 = nodes[ links[i]['source']['index'] ]['x']
-        sy1 = nodes[ links[i]['source']['index'] ]['y']
-        tx1 = nodes[ links[i]['target']['index'] ]['x']
-        ty1 = nodes[ links[i]['target']['index'] ]['y']
-        index1 = links[i]['source']['index']
-        index2 = links[i]['target']['index']
+        # sx1 = nodes[ links[i]['source']['index'] ]['x']
+        # sy1 = nodes[ links[i]['source']['index'] ]['y']
+        # tx1 = nodes[ links[i]['target']['index'] ]['x']
+        # ty1 = nodes[ links[i]['target']['index'] ]['y']
+        # index1 = links[i]['source']['index']
+        # index2 = links[i]['target']['index']
+        sx1 = nodes[ links[i]['source'] ]['cx']
+        sy1 = nodes[ links[i]['source'] ]['cy']
+        tx1 = nodes[ links[i]['target'] ]['cx']
+        ty1 = nodes[ links[i]['target'] ]['cy']
+        index1 = links[i]['source']
+        index2 = links[i]['target']
         # print('i = ' + str(i))
 
         for j in range (length - i - 1):
-            sx2 = nodes[ links[i+j+1]['source']['index'] ]['x']
-            sy2 = nodes[ links[i+j+1]['source']['index'] ]['y']
-            tx2 = nodes[ links[i+j+1]['target']['index'] ]['x']
-            ty2 = nodes[ links[i+j+1]['target']['index'] ]['y']
-            index3 = links[i+j+1]['source']['index']
-            index4 = links[i+j+1]['target']['index']
+            sx2 = nodes[ links[i+j+1]['source'] ]['cx']
+            sy2 = nodes[ links[i+j+1]['source'] ]['cy']
+            tx2 = nodes[ links[i+j+1]['target'] ]['cx']
+            ty2 = nodes[ links[i+j+1]['target'] ]['cy']
+            index3 = links[i+j+1]['source']
+            index4 = links[i+j+1]['target']
 
             try:
                 # if an either of thw two links is vertical, we do not count
@@ -58,19 +66,19 @@ def edgeCross(data):
                 pass
 
     # print(len(links))
-    import numpy as np
-    import matplotlib.pyplot as plt
-    plt.gca().invert_yaxis()
-    for i in links:
-        plt.plot([ nodes[ i['source']['index']] ['x'], nodes[i['target']['index']] ['x'] ],  [ nodes[ i['source']['index']] ['y'], nodes[i['target']['index']] ['y']  ], 'k-')
-
-    x = []
-    y = []
-    for i in nodes:
-        x.append(i['x'])
-        y.append(i['y'])
-        plt.plot(x, y, 'o')
-    plt.show()
+    # import numpy as np
+    # import matplotlib.pyplot as plt
+    # plt.gca().invert_yaxis()
+    # for i in links:
+    #     plt.plot([ nodes[ i['source']['index']] ['x'], nodes[i['target']['index']] ['x'] ],  [ nodes[ i['source']['index']] ['y'], nodes[i['target']['index']] ['y']  ], 'k-')
+    #
+    # x = []
+    # y = []
+    # for i in nodes:
+    #     x.append(i['x'])
+    #     y.append(i['y'])
+    #     plt.plot(x, y, 'o')
+    # plt.show()
     return total
 
 def aspect(data):
@@ -83,7 +91,7 @@ def aspect(data):
         mean += aspect
     return mean / len(boxes)
 
-def spaceWasteddata(data):
+def spaceWasted(data):
     boxes = data['groups']
     minx = boxes[0]['x']
     maxx = minx + boxes[0]['dx']
@@ -101,6 +109,24 @@ def spaceWasteddata(data):
 
 
 if __name__ == '__main__':
-    print( 'The number of crossing is ' + str(edgeCross()) )
-    print('Mean aspect ratio is ' + str(aspect() ) )
-    print('Mean space wasted is ' + str(spaceWasted()))
+    pathes = []
+    pathes.append( '../data/STGIB/comp/')
+    pathes.append( '../data/TRGIB/comp/')
+    pathes.append( '../data/Chaturvedi/comp/')
+    pathes.append( '../data/FDGIB/comp/')
+    outputData = ['groupSize', 'pgroup', 'pout', 'nodeSize', 'linkSize', 'edgeCross', 'meanAspect', 'meanSpaceWasted']
+    for path in pathes:
+        type = (path[8:13])
+        for file in os.listdir(path):
+            if file != '.DS_Store':
+                print(file)
+                data = json.load( open(path + file, 'r') )
+                list = []
+                crossing = edgeCross(data)
+                list.extend( [ type, data['groupSize'],  crossing, aspect(data), spaceWasted(data) ] )
+                outputData.append(list)
+
+    with open('../data/result.csv', 'w') as f:
+        writer = csv.writer(f) # 改行コード（\n）を指定しておく
+        for row in outputData:
+            writer.writerow(row)
