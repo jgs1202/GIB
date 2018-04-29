@@ -39,13 +39,13 @@ def makeData():
                 num = 0
                 for l in range(m):
                     rand = np.random.normal(52.5, 35.3, 1)
-                    rand = round(rand[0]).astype(np.int32)
-                    if rand < 4:
+                    if rand[0] < 4:
                         rand = 4
                     try:
-                        rand = round(rand).astype(np.int32)
+                        rand = round(rand[0]).astype(np.int32)
                     except:
-                        rand = int(rand)
+                        if rand != 4:
+                            rand = int(rand[0])
                     for j in range(rand):
                         nodes[l].append(num)
                         num += 1
@@ -109,7 +109,7 @@ def makeData():
                         dic['group'] = p
                         nodes_for_write.append(dic)
 
-                list = [ name, m, len(link), len(nodes)]
+                list = [ name, m, len(links), len(nodes)]
 
     with open('../data/' +'totalOfOriginData.csv', 'w') as f:
         writer = csv.writer(f)
