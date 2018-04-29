@@ -112,9 +112,9 @@ def makeData():
                 list = [ name, m, len(link), len(nodes)]
 
     with open('../data/' +'totalOfOriginData.csv', 'w') as f:
-		writer = csv.writer(f)
+        writer = csv.writer(f)
         for row in list:
-		    writer.writerow(row)
+            writer.writerow(row)
 
 
 
