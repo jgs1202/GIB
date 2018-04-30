@@ -6,9 +6,10 @@ import os
 import sys
 import csv
 import numpy as np
+from statistics import mean, stdev
 
 def makeData():
-    eachNum = 5
+    eachNum = 100
     mset = [8, 11, 14, 17]
     thre = 0.1
     pin = 0.2
@@ -17,10 +18,12 @@ def makeData():
     poutset = [0, 0.001, 0.002]
     total = len(mset) * len(pgroupset) * len(poutset)
     name = 0
-    outputdata = [ ["id", "groupSize", "linkSize", "nodeSize"] ]
+    outputData = [ ["groupSize", "group", "pout", "linkSize", "stdiv", "nodeSize", "stdev"] ]
 
     for i in range(total):
         print('step = ' + str(i))
+        linkSize = []
+        nodeSize = []
         for each in range(eachNum):
             if each == 0:
                 m = mset[ int( i /( len(pgroupset) * len(poutset)) ) ]
@@ -109,14 +112,17 @@ def makeData():
                         dic['group'] = p
                         nodes_for_write.append(dic)
 
-                list = [ name, m, len(links), len(nodes)]
+
+                name += 1
+                linkSize.append(len(links))
+                nodeSize.append(len(nodes_for_write))
+        if len(linkSize) != 0:
+            outputData.append( [m, pgroup, pout, mean(linkSize), stdev(linkSize), mean(nodeSize), stdev(linkSize)])
 
     with open('../data/' +'totalOfOriginData.csv', 'w') as f:
         writer = csv.writer(f)
-        for row in list:
+        for row in outputData:
             writer.writerow(row)
-
-
 
 if __name__ == '__main__':
     makeData()
