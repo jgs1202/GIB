@@ -140,7 +140,7 @@ def readjson(path, dir, file):
     #################### G-skewness ##############
     G_skewness = ( len(groups[Gdegree[0][1]]) + len(groups[Gdegree[1][1]])) / len(data['nodes'])
 
-    print( len(groups), G_skewness)
+    # print( len(groups), G_skewness)
     if len(groups) <= 3 or G_skewness < 0.1:
         type = 'STGIB'
         use = 'Chaturvedi'

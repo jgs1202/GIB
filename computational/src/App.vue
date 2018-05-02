@@ -31,7 +31,7 @@ export default {
       link: 0,
       　
       groupingForce: 0,
-      dataNum: 0,
+      dataNum: 1609,
       // mset: [12, 15, 18, 21],
       mset: [12, 15, 18],
       pgroupset: [0, 0.05, 0.1, 0.2],

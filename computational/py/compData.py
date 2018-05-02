@@ -10,7 +10,7 @@ def makeData():
     eachNum = 50
     mset = [8, 11, 14, 17]
     thre = 0.1
-    pin = 0.2
+    pin = 0.25
     pbridge = 0.05
     pgroupset = [ 0, 0.05, 0.1, 0.2]
     poutset = [0, 0.001, 0.002]
@@ -200,7 +200,7 @@ def calc(data, m):
 
 if __name__ == '__main__':
     makeData()
-    cmds = [ 'python STGIB.py', 'python Chaturvedi.py']
+    cmds = [ 'python STGIB.py', 'python Chaturvedi.py', 'python groupWeight.py']
     for i in cmds:
         cmd = i
     os.system(cmd)

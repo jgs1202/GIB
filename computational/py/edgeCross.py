@@ -111,9 +111,9 @@ def spaceWasted(data):
 if __name__ == '__main__':
     pathes = []
     pathes.append( '../data/STGIB/comp/')
-    pathes.append( '../data/TRGIB/comp/')
-    pathes.append( '../data/Chaturvedi/comp/')
-    pathes.append( '../data/FDGIB/comp/')
+    # pathes.append( '../data/TRGIB/comp/')
+    # pathes.append( '../data/Chaturvedi/comp/')
+    # pathes.append( '../data/FDGIB/comp/')
     outputData = [['type', 'groupSize', 'pgroup', 'pout', 'nodeSize', 'linkSize', 'edgeCross', 'meanAspect', 'meanSpaceWasted']]
     for path in pathes:
         type = (path[8:13])
@@ -125,7 +125,7 @@ if __name__ == '__main__':
                 list.extend( [type,  data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data) ] )
                 outputData.append(list)
 
-    with open('../data/result.csv', 'w') as f:
+    with open('../data/resultSTGIB.csv', 'w') as f:
         writer = csv.writer(f) # 改行コード（\n）を指定しておく
         for row in outputData:
             writer.writerow(row)

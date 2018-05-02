@@ -67,7 +67,8 @@ def checkPRISM(center, links, boxes):
 
         for i in range(length):
             dic = {}
-            # print(len(center), links[i]['node2'])
+            # print(links)
+            # print(len(center), links[i]['node2'] )
             if center[links[i]['node1']][0] != center[links[i]['node2']][0]:
                 xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
             else:
@@ -306,7 +307,7 @@ def checkAll(center, boxes, data):
         data['layout'] = 'FDGIB'
         del data['boxes']
 
-        print(out + str(data['file']))
+        # print(out + str(data['file']))
         f = open(out + str(data['file']), 'w')
         json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
 
@@ -335,7 +336,7 @@ if __name__ == '__main__':
     global height
     width = 1620.7
     height = 1000
-    reader = open('../mock/fdData.json', 'r')
+    reader = open('../mock/fdData3.json', 'r')
     data = json.load(reader)
     for i in data['coordinates']:
         if i['id'] != 1:
