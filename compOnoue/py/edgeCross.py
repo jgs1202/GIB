@@ -71,6 +71,7 @@ def modularity(data):
     mod = community.modularity(part, G)
     return mod
 
+
 def aspect(data):
     boxes = data['groups']
     mean = 0
@@ -80,6 +81,7 @@ def aspect(data):
         aspect = max([as1, as2])
         mean += aspect
     return mean / len(boxes)
+
 
 def spaceWasted(data):
     boxes = data['groups']
@@ -97,6 +99,7 @@ def spaceWasted(data):
     total = (maxx - minx)*(maxy - miny)
     # print((area - total)/total)
     return ((area - total)/total)
+
 
 def getStatic(data):
     list = []
@@ -119,12 +122,11 @@ def getStatic(data):
             dic['type'], dic['groupSize'], dic['pgroup'], dic['pout'], dic['nodeSize'], dic['linkSize'], dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], i[1], i[2], i[3], 0,0,[],[],[],[]
             if dic not in list:
                 list.append(dic)
-    print(list)
     for datum in data:
         for i in range(len(list)):
-            print(datum[0])
+            # print(datum[0], list[i]['type'], datum[1], list[i]['groupSize'], datum[2], list[i]['pgroup'], datum[3], list[i]['pout'], )
             if datum[0] == list[i]['type'] and datum[1] == list[i]['groupSize'] and datum[2] == list[i]['pgroup'] and datum[3] == list[i]['pout']:
-                # print(datum[4])
+                print(datum[0])
                 list[i]['nodeSize'] += datum[4]
                 list[i]['linkSize'] += datum[5]
                 list[i]['edgeCross'].append(datum[6])
@@ -134,7 +136,8 @@ def getStatic(data):
                 if 'total' in list[i].keys():
                     list[i]['total'] += 1
                 else:
-                    list[i]['total'] = 0
+                    list[i]['total'] = 1
+                print(list[i]['total'])
     for i in range(len(list)):
         try:
             list[i]['nodeSize'] /= list[i]['total']
@@ -148,7 +151,7 @@ def getStatic(data):
         list[i]['devSpaceWasted'] = stdev(list[i]['meanSpaceWasted'])
         list[i]['meanSpaceWasted'] = mean(list[i]['meanSpaceWasted'])
         list[i]['meanModularity'] = mean(list[i]['meanModularity'])
-    f = open('./result.json', 'w')
+    f = open('../data/result.json', 'w')
     json.dump(list, f, ensure_ascii=False, indent=4, sort_keys=True, separators= (',', ': '))
 
 if __name__ == '__main__':
@@ -160,16 +163,14 @@ if __name__ == '__main__':
     outputData = [['type', 'groupSize', 'pgroup', 'pout', 'nodeSize', 'linkSize', 'edgeCross', 'meanAspect', 'meanSpaceWasted', 'meanModularity']]
     for path in pathes:
         type = path[8:13]
-        print(type)
         for file in os.listdir(path):
             if file != '.DS_Store':
-            # if file == '0.json' or file=='1.json'or file=='2.json':
-                print(file)
-                data = json.load(open(path + file, 'r'))
-                list = []
-                crossing = edgeCross(data)
-                list.extend([type,data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
-                outputData.append(list)
+                if file == '0.json' or file=='1.json'or file=='2.json':
+                    print(file)
+                    data = json.load(open(path + file, 'r'))
+                    list = []
+                    crossing = edgeCross(data)
+                    list.extend([type,data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
+                    outputData.append(list)
+
     getStatic(outputData)
-
-
