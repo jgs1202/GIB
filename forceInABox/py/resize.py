@@ -12,7 +12,7 @@ def resize(path, num, main):
     margin = 20
     reader = open(path, 'r')
     data = json.load(reader)
-
+    old = (data['groupSize'])
 
     # import pylab as pl
     # pl.xticks([0, width])
@@ -50,14 +50,16 @@ def resize(path, num, main):
         which = 'x'
     else :
         which = 'y'
-    print(xmin, xmax, ymin, ymax, reWidth, reHeight)
+    # print(xmin, xmax, ymin, ymax, reWidth, reHeight)
     if which == 'x':
+        # print('width')
         span = (reWidth * outHeight / outWidth - reHeight)/2
         ymin -= span
         ymax += span
         reHeight = reWidth * height / width
         ratio = (outHeight) / reHeight
     if which == 'y':
+        # print('height')
         span = (reHeight * outWidth / outHeight - reWidth)/2
         xmin -= span
         xmax += span
@@ -80,6 +82,7 @@ def resize(path, num, main):
             data['groups'][i]['y'] = (data['groups'][i]['y'] - ymin) * ratio
             data['groups'][i]['dx'] *= ratio
             data['groups'][i]['dy'] *= ratio
+    # print(ratio)
 
 
     for i in range(len(data['groups'])):
@@ -120,6 +123,8 @@ def resize(path, num, main):
     for i in range(len(data['nodes'])):
         data['nodes'][i]['x'] += margin
         data['nodes'][i]['y'] += margin
+
+    sizes.append(data['groupSize'])
     #
     # import pylab as pl
     # pl.xticks([0, outWidth + margin*2])
@@ -128,22 +133,26 @@ def resize(path, num, main):
     #     pl.gca().add_patch( pl.Rectangle(xy=[i['x'], outHeight + margin*2 - i['y'] - i['dy']], width=i['dx'], height=i['dy'], linewidth='1.0', fill=False))
     # pl.show()
     #
-    f = open( main + str(num) + '.json', 'w')
+    f = open( '../data/FDGIB/temp/' + data['file'], 'w')
     json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
     # sys.exit()
 
 
 def main():
     main = '../data/FDGIB/temp/'
+    global sizes
+    sizes = []
     # for dir in os.listdir(main):
     #     if (dir != '.DS_Store'):
     num = 0
     for file in os.listdir(main):
         if file[-5:] == '.json':
+            print(file)
             path = main + file
-            print(path)
+            # print(path)
             resize(path, num, main)
             num += 1
+    print(sizes.count(8), sizes.count(17))
 
 if __name__ == '__main__':
     global width
