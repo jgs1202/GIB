@@ -137,7 +137,7 @@ def getStatic(data):
                     list[i]['total'] += 1
                 else:
                     list[i]['total'] = 1
-                print(list[i]['total'])
+                # print(list[i]['total'])
     for i in range(len(list)):
         try:
             list[i]['nodeSize'] /= list[i]['total']
