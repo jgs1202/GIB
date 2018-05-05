@@ -165,12 +165,12 @@ if __name__ == '__main__':
         type = path[8:13]
         for file in os.listdir(path):
             if file != '.DS_Store':
-                if file == '0.json' or file=='1.json'or file=='2.json':
-                    print(file)
-                    data = json.load(open(path + file, 'r'))
-                    list = []
-                    crossing = edgeCross(data)
-                    list.extend([type,data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
-                    outputData.append(list)
+                # if file == '0.json' or file=='1.json'or file=='2.json':
+                print(file)
+                data = json.load(open(path + file, 'r'))
+                list = []
+                crossing = edgeCross(data)
+                list.extend([type,data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
+                outputData.append(list)
 
     getStatic(outputData)
