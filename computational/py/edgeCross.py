@@ -62,7 +62,6 @@ def edgeCross(data):
 
 
 def modularity(data):
-    G = nx.Graph()
     G = json_graph.node_link_graph(data)
     # part = community.best_partition(G)
     part = {}
@@ -70,6 +69,7 @@ def modularity(data):
         part[node['name']] = node['group']
     mod = community.modularity(part, G)
     return mod
+
 
 def aspect(data):
     boxes = data['groups']
@@ -80,6 +80,7 @@ def aspect(data):
         aspect = max([as1, as2])
         mean += aspect
     return mean / len(boxes)
+
 
 def spaceWasted(data):
     boxes = data['groups']
@@ -163,7 +164,7 @@ if __name__ == '__main__':
         print(type)
         for file in os.listdir(path):
             if file != '.DS_Store':
-            # if file == '0.json' or file=='1.json'or file=='2.json':
+                # if file == '0.json' or file=='1.json'or file=='2.json':
                 print(file)
                 data = json.load(open(path + file, 'r'))
                 list = []
