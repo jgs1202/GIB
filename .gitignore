@@ -10,3 +10,5 @@
 /trgib/
 **/node_modules/
 /node_modules/
+*.png
+*.jpg
