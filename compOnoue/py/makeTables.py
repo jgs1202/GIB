@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import json
 import pandas as pd
 import pandas.tools.plotting as plotting
 import matplotlib.pyplot as plt
+
 
 def custom_round(number, ndigits=0):
     if type(number) == int:#整数ならそのまま返す
@@ -45,7 +45,7 @@ def main():
 
 	for out in output:
 		print(out['data'])
-		columns = ( 'edge crossing (SD)', 'mean aspect ratio (SD)', 'mean space efficiency (SD)', 'mean modularity')
+		columns = ('edge crossing (SD)', 'mean aspect ratio (SD)', 'mean space efficiency (SD)', 'mean modularity')
 		rows = ['STGIB', 'CDGIB', 'FDGIB', 'TRGIB']
 		tableData = [[] for i in range(4)]
 		for i in out['data']:
@@ -60,7 +60,7 @@ def main():
 		print(tableData)
 		# plt.table(cellText = tableData, rowLabels=rows, colLabels=columns)
 		fig, ax = plt.subplots(1,1)
-		plotting.table(ax, pd.DataFrame(tableData),rowLabels=rows, colLabels=columns,  loc='center')
+		plotting.table(ax, pd.DataFrame(tableData), rowLabels=rows, colLabels=columns, loc='center')
 		plt.title(out["name"])
 		ax.axis('off')
 		plt.savefig('../data/tables/' + out['name'] + '.png')
