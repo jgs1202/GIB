@@ -119,14 +119,14 @@ def getStatic(data):
     for i in data:
         if i[0] != 'type':
             dic = {}
-            dic['type'], dic['groupSize'], dic['pgroup'], dic['pout'], dic['nodeSize'], dic['linkSize'], dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], i[1], i[2], i[3], 0,0,[],[],[],[]
+            dic['type'], dic['pgroup'], dic['pout'], dic['nodeSize'], dic['linkSize'], dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], i[2], i[3], 0,0,[],[],[],[]
             if dic not in list:
                 list.append(dic)
-    print(list)
+    # print(list)
     for datum in data:
         for i in range(len(list)):
-            print(datum[0])
-            if datum[0] == list[i]['type'] and datum[1] == list[i]['groupSize'] and datum[2] == list[i]['pgroup'] and datum[3] == list[i]['pout']:
+            # print(datum[0])
+            if datum[0] == list[i]['type'] and datum[2] == list[i]['pgroup'] and datum[3] == list[i]['pout']:
                 # print(datum[4])
                 list[i]['nodeSize'] += datum[4]
                 list[i]['linkSize'] += datum[5]
@@ -151,7 +151,7 @@ def getStatic(data):
         list[i]['devSpaceWasted'] = stdev(list[i]['meanSpaceWasted'])
         list[i]['meanSpaceWasted'] = mean(list[i]['meanSpaceWasted'])
         list[i]['meanModularity'] = mean(list[i]['meanModularity'])
-    f = open('./result.json', 'w')
+    f = open('../data/result.json', 'w')
     json.dump(list, f, ensure_ascii=False, indent=4, sort_keys=True, separators= (',', ': '))
 
 if __name__ == '__main__':
@@ -162,17 +162,17 @@ if __name__ == '__main__':
     pathes.append('../data/FDGIB/comp/')
     outputData = [['type', 'groupSize', 'pgroup', 'pout', 'nodeSize', 'linkSize', 'edgeCross', 'meanAspect', 'meanSpaceWasted', 'meanModularity']]
     for path in pathes:
+        # print(path)
         type = path[8:13]
-        print(type)
         for file in os.listdir(path):
             if file != '.DS_Store':
-                if int(file[0]) < 10:
-                    print(file)
-                    data = json.load(open(path + file, 'r'))
-                    list = []
-                    crossing = edgeCross(data)
-                    list.extend([type, data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
-                    outputData.append(list)
+                # if int(file[0]) < 2:
+                # print(file)
+                data = json.load(open(path + file, 'r'))
+                list = []
+                crossing = edgeCross(data)
+                list.extend([type, data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
+                outputData.append(list)
     getStatic(outputData)
 
 

@@ -187,6 +187,8 @@ def doughnut( data, groups, path, dir, file, width, height, Gdegree):
     forWrite['pgroup'] = data['pgroup']
     forWrite['pout'] = data['pout']
     forWrite['mostConnected'] = data['mostConnected']
+    forWrite['nodeSize']= data['nodeSize']
+    forWrite['linkSize'] = data['linkSize']
     forWrite['nodeMax']= data['nodeMax']
     forWrite['nodeMin'] = data['nodeMin']
     forWrite['linkMax'] = data['linkMax']

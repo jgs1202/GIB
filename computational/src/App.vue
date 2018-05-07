@@ -31,7 +31,7 @@ export default {
       link: 0,
       　
       groupingForce: 0,
-      dataNum: 1609,
+      dataNum: 1096,
       // mset: [12, 15, 18, 21],
       mset: [12, 15, 18],
       pgroupset: [0, 0.05, 0.1, 0.2],
@@ -121,6 +121,7 @@ export default {
       that.svg.selectAll(".rect").remove();
 
       that.force = d3.forceSimulation()
+        .alpha(1.0)
         .force("charge", d3.forceManyBody())
         .force("x", d3.forceX(that.width / 2).strength(0.05))
         .force("y", d3.forceY(that.height / 2).strength(0.05));
@@ -519,6 +520,7 @@ export default {
             return forceCharge * d.size * that.chargeForce;
           }))
           .force("links", d3.forceLink(!net.nodes ? net.links : []))
+          .alphaMin(0.1)
           .on('end', onEnd)
 
         templateForce.force('collide').radius(that.radius)
@@ -531,6 +533,9 @@ export default {
       function onEnd() {
         // console.log(nodes)
         // console.log(nodes.map(function(d) { return [d.x, d.y] }))
+        that.force.stop()
+        // that.dataNum += 1
+        // setTimeout(that.reload, 2000)
         getCoo()
       }
 

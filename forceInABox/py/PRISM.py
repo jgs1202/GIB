@@ -47,6 +47,7 @@ def makeData(center, links, boxes, data):
                 dic['node1'] = i
                 dic['node2'] = i+j
                 links.append(dic)
+    print(links)
 
 def checkPRISM(center, links, boxes):
     oldcenter = copy.deepcopy(center)
@@ -67,8 +68,8 @@ def checkPRISM(center, links, boxes):
 
         for i in range(length):
             dic = {}
-            # print(links)
-            # print(len(center), links[i]['node2'] )
+            # print(links[i])
+            # print(len(center), links[i]['node2'])
             if center[links[i]['node1']][0] != center[links[i]['node2']][0]:
                 xover = ( center[links[i]['node1']][2] + center[links[i]['node2']][2] +5) / ( abs( center[links[i]['node1']][0] - center[links[i]['node2']][0]) )
             else:
@@ -354,5 +355,5 @@ if __name__ == '__main__':
                 os.mkdir(out)
             main(datum, out)
             # sys.exit()
-    # cmd = 'python resize.py'
-    # os.system(cmd)
+    cmd = 'python resize.py'
+    os.system(cmd)

@@ -8,15 +8,15 @@ import numpy as np
 def makeData():
     eachNum = 40
     output = ['STGIB', 'Chaturvedi', 'FDGIB', 'TRGIB']
-    mset = [12, 15, 18]
-    thre = 0.2
-    nodeThre = 0.7
-    nmin = 10
-    nmax = 30
+    # mset = [12, 15, 18]
+    thre = 0.5
+    nodeThre = 0.5
+    # nmin = 10
+    # nmax = 30
     pin = 0.2
     pbridge = 0.05
     # pgroupset = [ 0, 0.05, 0.1, 0.2]
-    pgroup = 0.1
+    pgroup = 0.2
     # poutset = [0, 0.001, 0.002]
     pout = 0.002
 
@@ -142,6 +142,8 @@ def makeData():
                     data['pgroup'] = pgroup
                     data['pout'] = pout
                     data['nodes'] = nodes_for_write
+                    data['linkSize'] = len(links)
+                    data['nodeSize'] = len(nodes_for_write)
                     data['links'] = links
                     data['file'] = str(each) +'.json'
                     data['dir'] = str(m) + '-' + str(pgroup) + '-' + str(pout)
@@ -205,15 +207,15 @@ def calc(data, m):
         if source != target:
 
             if source < target:
-                if linkNum[source][target-source]  == 0:
-                    linkNum[source][target-source] = 1
+                if linkNum[source][target - source]== 0:
+                    linkNum[source][target - source] = 1
                 else:
-                    linkNum[source][target-source] += 1
+                    linkNum[source][target - source] += 1
             else:
-                if linkNum[target][source-target]  == 0:
-                    linkNum[target][source-target] = 1
+                if linkNum[target][source - target]== 0:
+                    linkNum[target][source - target] = 1
                 else:
-                    linkNum[target][source-target] += 1
+                    linkNum[target][source - target] += 1
 
     max = linkNum[0][0]
     most = []
@@ -223,7 +225,7 @@ def calc(data, m):
                 most = [[i, i+j]]
                 max = linkNum[i][j]
             elif linkNum[i][j] == max:
-                most.append([i,i+j])
+                most.append([i, i + j])
 
     # print(most)
     data['mostConnected'] = most
@@ -252,7 +254,7 @@ def calc(data, m):
 
 if __name__ == '__main__':
     makeData()
-    cmds = [ 'python STGIB.py', 'python Chaturvedi.py']
+    cmds = [ 'python STGIB.py', 'python Chaturvedi.py', 'python groupWeight.py']
     for i in cmds:
         cmd = i
     os.system(cmd)

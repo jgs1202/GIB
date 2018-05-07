@@ -519,6 +519,7 @@ export default {
             return forceCharge * d.size * that.chargeForce;
           }))
           .force("links", d3.forceLink(!net.nodes ? net.links : []))
+          .alphaMin(0.1)
           .on('end', onEnd)
 
         templateForce.force('collide').radius(that.radius)
@@ -734,6 +735,8 @@ export default {
         data.nodeMin = that.graph.nodeMin
         data.linkMax = that.graph.linkMax
         data.linkMin = that.graph.linkMin
+        data.linkSize = that.graph,linkSize
+        data.nodeSize = that.graph.nodeSize
         fetch('http://localhost:3000/coordinates', {
           method: 'POST',
           headers: {
