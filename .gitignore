@@ -1,4 +1,3 @@
-/2017gib-reordering/
 *.csv
 *.json
 !package.json
