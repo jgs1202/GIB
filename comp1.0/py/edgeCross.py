@@ -23,23 +23,26 @@ def edgeCross(data):
         sx2, sy2 = nodes[index3]
         tx2, ty2 = nodes[index4]
 
-        # if an either of thw two links is vertical, we do not count
-        if tx1 == sx1 and tx2 != sx2:
-            x = tx1
-            y = (ty2 - sy2) / (tx2 - sx2) * (x - sx2) + sy2
-        elif tx1 != sx1 and tx2 == sx2:
-            x = tx2
-            y = (ty1 - sy1) / (tx1 - sx1) * (x - sx1) + sy1
-        else:
-            tan1 = (ty1 - sy1) / (tx1 - sx1)
-            tan2 = (ty2 - sy2) / (tx2 - sx2)
-            # tan1 * x - tan1 * sx1 + sy1 = tan2 * x - tan2 * sx2 + sy2
-            if tan1 == tan2:
-                x = False
-                y = False
+        try:
+            # if an either of thw two links is vertical, we do not count
+            if tx1 == sx1 and tx2 != sx2:
+                x = tx1
+                y = (ty2 - sy2) / (tx2 - sx2) * (x - sx2) + sy2
+            elif tx1 != sx1 and tx2 == sx2:
+                x = tx2
+                y = (ty1 - sy1) / (tx1 - sx1) * (x - sx1) + sy1
             else:
-                x = (sy2 - sy1 + tan1 * sx1 - tan2 * sx2) / (tan1 - tan2)
-                y = tan1 * (x - sx1) + sy1
+                tan1 = (ty1 - sy1) / (tx1 - sx1)
+                tan2 = (ty2 - sy2) / (tx2 - sx2)
+                # tan1 * x - tan1 * sx1 + sy1 = tan2 * x - tan2 * sx2 + sy2
+                if tan1 == tan2:
+                    x = False
+                    y = False
+                else:
+                    x = (sy2 - sy1 + tan1 * sx1 - tan2 * sx2) / (tan1 - tan2)
+                    y = tan1 * (x - sx1) + sy1
+        except:
+            pass
         # if intersection point is same as either of source or target we do not count
         if x == sx1 and y == sy1:
             continue
@@ -108,39 +111,42 @@ def getStatic(data):
             data[i][1] = int(data[i][1])
             data[i][2] = float(data[i][2]) 
             data[i][3] = float(data[i][3])
-            data[i][4] = float(data[i][4])
-            data[i][5] = float(data[i][5])
-            data[i][6] = float(data[i][6])
+            data[i][4] = int(data[i][4])
+            data[i][5] = int(data[i][5])
+            data[i][6] = int(data[i][6])
             data[i][7] = float(data[i][7])
+            data[i][8] = float(data[i][8])
+            data[i][9] = float(data[i][9])
         if data[i][0] == 'FDGIB':
-            data[i][5] = 1.0
+            data[i][7] = 1.0
     for i in data:
         if i[0] != 'type':
             dic = {}
-            dic['type'], dic['groupSize'], dic['pgroup'], dic['pout'],dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], [], i[2], i[3],[],[],[],[]
+            dic['type'], dic['groupSize'], dic['pgroup'], dic['pout'], dic['nodeSize'], dic['linkSize'], dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], i[1], i[2], i[3], 0,0,[],[],[],[]
             if dic not in list:
                 list.append(dic)
     for datum in data:
         for i in range(len(list)):
             # print(datum[0], list[i]['type'], datum[1], list[i]['groupSize'], datum[2], list[i]['pgroup'], datum[3], list[i]['pout'], )
-            if datum[0] == list[i]['type']:
+            if datum[0] == list[i]['type'] and datum[1] == list[i]['groupSize'] and datum[2] == list[i]['pgroup'] and datum[3] == list[i]['pout']:
                 print(datum[0])
-                list[i]['groupSize'].append(datum[1])
-                list[i]['edgeCross'].append(datum[4])
-                list[i]['meanAspect'].append(datum[5])
-                list[i]['meanSpaceWasted'].append(datum[6])
-                list[i]['meanModularity'].append(datum[7])
+                list[i]['nodeSize'] += datum[4]
+                list[i]['linkSize'] += datum[5]
+                list[i]['edgeCross'].append(datum[6])
+                list[i]['meanAspect'].append(datum[7])
+                list[i]['meanSpaceWasted'].append(datum[8])
+                list[i]['meanModularity'].append(datum[9])
                 if 'total' in list[i].keys():
                     list[i]['total'] += 1
                 else:
                     list[i]['total'] = 1
+                # print(list[i]['total'])
     for i in range(len(list)):
-        # try:
-        #     list[i]['nodeSize'] /= list[i]['total']
-        #     list[i]['linkSize'] /= list[i]['total']
-        # except:
-        #     print('total is zero')
-        list[i]['groupSize'] = mean(list[i]['groupSize'])
+        try:
+            list[i]['nodeSize'] /= list[i]['total']
+            list[i]['linkSize'] /= list[i]['total']
+        except:
+            print('total is zero')
         list[i]['devEdgeCross'] = stdev(list[i]['edgeCross'])
         list[i]['edgeCross'] = mean(list[i]['edgeCross'])
         list[i]['devAspect'] = stdev(list[i]['meanAspect'])
@@ -157,7 +163,7 @@ if __name__ == '__main__':
     pathes.append('../data/TRGIB/comp/')
     pathes.append('../data/Chaturvedi/comp/')
     pathes.append('../data/FDGIB/comp/')
-    outputData = [['type', 'groupSize', 'pgroup', 'pout', 'edgeCross', 'meanAspect', 'meanSpaceWasted', 'meanModularity']]
+    outputData = [['type', 'groupSize', 'pgroup', 'pout', 'nodeSize', 'linkSize', 'edgeCross', 'meanAspect', 'meanSpaceWasted', 'meanModularity']]
     for path in pathes:
         type = path[8:13]
         for file in os.listdir(path):
@@ -167,7 +173,7 @@ if __name__ == '__main__':
                 data = json.load(open(path + file, 'r'))
                 list = []
                 crossing = edgeCross(data)
-                list.extend([type,data['groupSize'], data['pgroup'], data['pout'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
+                list.extend([type,data['groupSize'], data['pgroup'], data['pout'], data['nodeSize'], data['linkSize'], crossing, aspect(data), spaceWasted(data), modularity(data) ])
                 outputData.append(list)
 
     getStatic(outputData)

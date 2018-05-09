@@ -21,7 +21,6 @@ def arrange():
 
     order = 0
     num = 0
-    total = 0
 
     for i in inputPath:
         for dir in os.listdir(i):
@@ -37,8 +36,6 @@ def arrange():
                 order += 1
                 if order > 3:
                     num += 1
-                if num == 80:
-                    break
 
 def main():
     arrange()

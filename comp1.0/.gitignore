@@ -1,0 +1,12 @@
+/2017gib-reordering/
+*.csv
+*.json
+!package.json
+!init.json
+**/*.rs.bk
+*.txt
+/forceInABox/node_modules/
+/computational/node_modules/
+/trgib/
+**/node_modules/
+/node_modules/

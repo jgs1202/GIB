@@ -49,6 +49,8 @@ export default {
       chargeForce: -0.1,
       tempStrength: 0.6,
       radius: 100,
+      dataset: [662, 779],
+      numbernow: 0,
     }
   },
   mounted: function() {
@@ -121,13 +123,16 @@ export default {
       that.svg.selectAll(".rect").remove();
 
       that.force = d3.forceSimulation()
+        .alpha(1.0)
         .force("charge", d3.forceManyBody())
         .force("x", d3.forceX(that.width / 2).strength(0.05))
         .force("y", d3.forceY(that.height / 2).strength(0.05));
 
 
       that.dir = './' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
-      that.path = '../data/origin/FDGIB/'
+      that.path = '../data/origin/'
+      that.dataNum = that.dataset[that.numbernow]
+      that.numbernow += 1
       console.log(that.path, that.dataNum)
       d3.json(that.path + that.dataNum + ".json").then(function(graph) {
         that.graph = graph
@@ -532,6 +537,9 @@ export default {
       function onEnd() {
         // console.log(nodes)
         // console.log(nodes.map(function(d) { return [d.x, d.y] }))
+        that.force.stop()
+        // that.dataNum += 1
+        // setTimeout(that.reload, 2000)
         getCoo()
       }
 
@@ -626,7 +634,7 @@ export default {
             max = area[i]
           }
         }
-        max = 1000
+        max = 500
         // console.log(max, area)
         for (let i = 0; i < area.length; i++) {
           // if (area[i] === max){
@@ -726,17 +734,13 @@ export default {
         console.log(that)
         data.pgroup = that.graph.pgroup
         data.pout = that.graph.pout
-        data.groupSize = that.graph.groupSize
-        data.dir = that.dir
         data.file = that.graph.file
+        data.groupSize = that.graph.groupSize
+        data.linkSize = that.graph.linkSize
+        data.nodeSize = that.graph.nodeSize
+        // data.dir = that.dir
+        // data.file = '' + that.dataNum + '.json'
         data.id = that.path + '' + that.dataNum + '.json'
-        data.mostConnected = that.graph.mostConnected
-        data.nodeMax = that.graph.nodeMax
-        data.nodeMin = that.graph.nodeMin
-        data.linkMax = that.graph.linkMax
-        data.linkMin = that.graph.linkMin
-        // data.linkSize = that.graph,linkSize
-        // data.nodeSize = that.graph.nodeSize
         fetch('http://localhost:3000/coordinates', {
           method: 'POST',
           headers: {

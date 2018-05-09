@@ -6,14 +6,14 @@ import sys
 import numpy as np
 
 def makeData():
-    eachNum = 40
+    eachNum = 90
     output = ['STGIB', 'Chaturvedi', 'FDGIB', 'TRGIB']
     # mset = [12, 15, 18]
-    thre = 0.5
-    nodeThre = 0.5
+    thre = 0.3
+    nodeThre = 0.4
     # nmin = 10
     # nmax = 30
-    pin = 0.2
+    pin = 0.25
     pbridge = 0.05
     # pgroupset = [ 0, 0.05, 0.1, 0.2]
     pgroup = 0.2
@@ -24,7 +24,6 @@ def makeData():
     pbridge = round(pbridge * thre, 4)
     # pgroup = round(pgroup * thre, 3)
     pout = round(pout * thre, 5)
-
 
     ############## normal distribution #####################
     muGroup, sigmaGroup = 11.4, 5.4
@@ -59,10 +58,10 @@ def makeData():
                     for l in range(m):
                         # rand = random.randint(nmin, nmax)
                         rand = np.random.normal(52.5, 35.3, 1)
-                        rand = round(rand[0]).astype(np.int32)
+                        rand *= nodeThre
+                        # rand = round(rand[0]).astype(np.int32)
                         if rand < 4:
                             rand = 4
-                        rand *= nodeThre
                         try:
                             rand = round(rand).astype(np.int32)
                         except:
@@ -101,7 +100,6 @@ def makeData():
                                             dic['target'] = nodes[p+j+1][l]
                                             dic['value'] = 1
                                             links.append(dic)
-
 
                     for p in range(m):
                         links.sort(key=itemgetter('source'))
@@ -242,7 +240,7 @@ def calc(data, m):
     linkGroup.sort(key=itemgetter(1), reverse=True)
     nodeGroup.sort(key=itemgetter(1), reverse=True)
     if nodeGroup[0][1] > nodeGroup[1][1]:
-        data['nodeMax'] = nodeGroup[1][0]
+        data['nodeMax'] = nodeGroup[0][0]
     if nodeGroup[-1][1] < nodeGroup[-2][1]:
         data['nodeMin'] = nodeGroup[-1][0]
     if linkGroup[0][1] > linkGroup[1][1]:
