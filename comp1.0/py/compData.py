@@ -10,7 +10,7 @@ def makeData():
     eachNum = 50
     mset = [8, 11, 14, 17]
     # thre = 0.1
-    pin = 0.25
+    pin = 0.286
     pbridge = 0.05
     pgroupset = [0, 0.1, 0.2]
     poutset = [0, 0.001, 0.002]

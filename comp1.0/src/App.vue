@@ -31,7 +31,7 @@ export default {
       link: 0,
       　
       groupingForce: 0,
-      dataNum: 0,
+      dataNum: 1487,
       // mset: [12, 15, 18, 21],
       mset: [12, 15, 18],
       pgroupset: [0, 0.05, 0.1, 0.2],
@@ -131,8 +131,6 @@ export default {
 
       that.dir = './' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
       that.path = '../data/origin/'
-      that.dataNum = that.dataset[that.numbernow]
-      that.numbernow += 1
       console.log(that.path, that.dataNum)
       d3.json(that.path + that.dataNum + ".json").then(function(graph) {
         that.graph = graph

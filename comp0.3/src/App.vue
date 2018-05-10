@@ -49,7 +49,6 @@ export default {
       chargeForce: -0.1,
       tempStrength: 0.6,
       radius: 100,
-      dataset: [662, 779],
       numbernow: 0,
     }
   },
@@ -131,8 +130,6 @@ export default {
 
       that.dir = './' + '' + that.mset[that.m] + '-' + that.pgroupset[that.pgroup] + '-' + that.poutset[that.pout] + '/'
       that.path = '../data/origin/'
-      that.dataNum = that.dataset[that.numbernow]
-      that.numbernow += 1
       console.log(that.path, that.dataNum)
       d3.json(that.path + that.dataNum + ".json").then(function(graph) {
         that.graph = graph

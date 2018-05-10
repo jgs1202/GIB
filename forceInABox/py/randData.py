@@ -13,7 +13,7 @@ def makeData():
     nodeThre = 0.4
     # nmin = 10
     # nmax = 30
-    pin = 0.25
+    pin = 0.286
     pbridge = 0.05
     # pgroupset = [ 0, 0.05, 0.1, 0.2]
     pgroup = 0.2
