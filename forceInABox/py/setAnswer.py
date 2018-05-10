@@ -24,7 +24,7 @@ def calc(data):
     for i in range(boxNum):
         if linkNum[i] == maxNum:
             linkOutMost.append(i)
-    print(linkNum, linkOutMost)
+    # print(linkNum, linkOutMost)
     data['linkOutMost'] = linkOutMost
 
     return data

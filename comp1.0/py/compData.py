@@ -40,7 +40,7 @@ def makeData():
                 num = 0
                 for l in range(m):
                     rand = np.random.normal(52.5, 35.3, 1)
-                    rand[0] *= 0.3
+                    rand[0] *= 0.4
                     rand = round(rand[0]).astype(np.int32)
                     if rand < 4:
                         rand = 4
