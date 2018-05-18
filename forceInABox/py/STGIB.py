@@ -18,7 +18,7 @@ def ST(data, groups, path, dir, file, width, height, use):
     for i in range(length):
         dic = {}
         dic['size'] = (len(groups[i])/total)
-        dic['index'] = i
+        dic['name'] = i
         groupSize.append(dic)
     groupSize.sort(key=itemgetter('size'), reverse = True )
 
@@ -26,7 +26,7 @@ def ST(data, groups, path, dir, file, width, height, use):
     values = []
     for i in groupSize:
         values.append(i['size'])
-        index.append(i['index'])
+        index.append(i['name'])
 
     # the sum of the values must equal the total area to be laid out
     # i.e., sum(values) == width * height
@@ -38,11 +38,11 @@ def ST(data, groups, path, dir, file, width, height, use):
     # padded_rects = squarify.padded_squarify(values, x, y, width, height)
     # print(padded_rects)
     for i in range(length):
-        rects[i]['index'] = index[i]
+        rects[i]['name'] = index[i]
 
-    rects.sort(key=itemgetter('index'))
-    for i in range(length):
-        del rects[i]['index']
+    rects.sort(key=itemgetter('name'))
+    # for i in range(length):
+    #     del rects[i]['index']
 
     dic = {}
     dic['x'] = 0

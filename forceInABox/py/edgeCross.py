@@ -98,15 +98,15 @@ def spaceWasted(data):
         maxy = max([maxy, i['y'] + i['dy']])
     total = (maxx - minx)*(maxy - miny)
     # print((area - total)/total)
-    return ((area - total)/total)
+    return 1.0 - ((area - total)/total)
 
 
 def getStatic(data):
     list = []
-    for i in range(len(data)):   
+    for i in range(len(data)):
         if i != 0:
             data[i][1] = int(data[i][1])
-            data[i][2] = float(data[i][2]) 
+            data[i][2] = float(data[i][2])
             data[i][3] = float(data[i][3])
             data[i][4] = float(data[i][4])
             data[i][5] = float(data[i][5])
@@ -117,7 +117,7 @@ def getStatic(data):
     for i in data:
         if i[0] != 'type':
             dic = {}
-            dic['type'], dic['groupSize'], dic['pgroup'], dic['pout'],dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], [], i[2], i[3],[],[],[],[]
+            dic['type'], dic['groupSize'], dic['pgroup'], dic['pout'], dic['edgeCross'], dic['meanAspect'], dic['meanSpaceWasted'], dic['meanModularity'] = i[0], [], i[2], i[3],[],[],[],[]
             if dic not in list:
                 list.append(dic)
     for datum in data:
@@ -128,7 +128,7 @@ def getStatic(data):
                 list[i]['groupSize'].append(datum[1])
                 list[i]['edgeCross'].append(datum[4])
                 list[i]['meanAspect'].append(datum[5])
-                list[i]['meanSpaceWasted'].append(datum[6])
+                list[i]['meanSpaceWasted'].append(100 - datum[6] * 100)
                 list[i]['meanModularity'].append(datum[7])
                 if 'total' in list[i].keys():
                     list[i]['total'] += 1

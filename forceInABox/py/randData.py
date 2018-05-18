@@ -6,7 +6,7 @@ import sys
 import numpy as np
 
 def makeData():
-    eachNum = 90
+    eachNum = 140
     output = ['STGIB', 'Chaturvedi', 'FDGIB', 'TRGIB']
     # mset = [12, 15, 18]
     thre = 0.3
@@ -57,9 +57,12 @@ def makeData():
                     num = 0
                     for l in range(m):
                         # rand = random.randint(nmin, nmax)
-                        rand = np.random.normal(52.5, 35.3, 1)
-                        rand *= nodeThre
+                        rand = 0
+                        while rand < 4 / nodeThre or rand > 52.5 + 35.3:
+                            rand = np.random.normal(52.5, 35.3, 1)[0]
+                            rand *= nodeThre
                         # rand = round(rand[0]).astype(np.int32)
+                        # print(rand)
                         if rand < 4:
                             rand = 4
                         try:
@@ -78,6 +81,10 @@ def makeData():
                         total += len(nodes[l])
                         for j in range( length ):
                             for k in range( length - j - 1):
+                                pin = 0
+                                while pin < 0.186 or pin > 0.386:
+                                    pin = np.random.normal(0.286, 0.1, 1)[0]
+                                pin *= thre
                                 if random.random() < pin:
                                     dic = {}
                                     dic['source'] = nodes[l][j]

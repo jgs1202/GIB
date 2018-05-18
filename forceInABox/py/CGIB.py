@@ -148,6 +148,7 @@ def croissant(data, groups, path, dir, file, width, height, Gdegree):
         dic['y'] = i[2] - i[4]
         dic['dx'] = i[3]*2
         dic['dy'] = i[4]*2
+        dic['name'] = i[0]
         groupCoo.append(dic)
     dic = {}
     dic['x'] = 0

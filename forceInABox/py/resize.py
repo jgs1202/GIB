@@ -35,11 +35,11 @@ def resize(path, num, main):
         else:
             if i['x'] < xmin and i['x']:
                 xmin = i['x']
-            elif i['x'] + i['dx'] > xmax:
+            if i['x'] + i['dx'] > xmax:
                 xmax = i['x'] + i['dx']
             if i['y'] < ymin:
                 ymin = i['y']
-            elif i['y'] + i['dy'] > ymax:
+            if i['y'] + i['dy'] > ymax:
                 ymax = i['y'] + i['dy']
 
     reWidth = xmax - xmin
@@ -107,11 +107,11 @@ def resize(path, num, main):
         else:
             if i['x'] < xmin and i['x']:
                 xmin = i['x']
-            elif i['x'] + i['dx'] > xmax:
+            if i['x'] + i['dx'] > xmax:
                 xmax = i['x'] + i['dx']
             if i['y'] < ymin:
                 ymin = i['y']
-            elif i['y'] + i['dy'] > ymax:
+            if i['y'] + i['dy'] > ymax:
                 ymax = i['y'] + i['dy']
     # print(data['groups'])
     dic = {}

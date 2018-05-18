@@ -25,6 +25,8 @@ if __name__ == '__main__':
                 dic['number'] = i
                 groups[graph['nodes'][i]['group']].append(dic)
             ST(graph, groups, path, dir, file, width, height, use)
+            for i in range(graph['groupSize']):
+                graph['groups'][i]['name'] = graph['groups'][i]['id']
             graph = json.load(open(path))
             out = '../data/TRGIB/temp/'
             try:

@@ -36,18 +36,31 @@ def arrange():
                 data['type'] = i[8:13]
                 outData[order].append(data)
                 # f = open( outputPath[order] + str(num) + '.json',  'w')
-                # json.dump(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
+                # json.dumppytho(data, f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))
                 order += 1
                 num += 1
-            if num == 80:
+            if num == 120:
                 print(num)
                 break
     print(len(outData[0]))
     for num in range(4):
-        orders = [i for i in range(80)]
-        random.shuffle(orders)
-
-        for i in range(80):
+        orders = [i for i in range(120)]
+        if num == 1 or num == 4:
+            random.shuffle(orders)
+        else:
+            early = []
+            later = []
+            unit = 0
+            for i in range(4):
+                early.extend(orders[unit:unit + 15])
+                later.extend(orders[unit + 15:unit + 30])
+                unit += 30
+            random.shuffle(early)
+            random.shuffle(later)
+            orders = early
+            orders.extend(later)
+        # print(len(orders))
+        for i in range(120):
             f = open(outputPath[num] + str(orders[i]) + '.json', 'w')
             outData[num][i]['file'] = str(orders[i]) + '.json'
             json.dump(outData[num][i], f, ensure_ascii=False, indent=4, sort_keys=True, separators=(',', ': '))

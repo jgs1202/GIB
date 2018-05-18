@@ -275,8 +275,6 @@ def checkAll(center, boxes, data):
     #         writer.writerow(i)
 
     if num != 1000:
-
-        length1 = len(center)
         # dif = []
         # for i in range(length1):
         #     dif.append([])
@@ -291,12 +289,15 @@ def checkAll(center, boxes, data):
         #         data['nodes'][i]['y'] += dif[ data['nodes'][i]['group'] ][1]
 
         boxesCoo = []
+        name = 0
         for i in center:
             dic = {}
             dic['x'] = i[0]-i[2]
             dic['y'] = i[1]-i[3]
             dic['dx'] = i[2]*2
             dic['dy'] = i[3]*2
+            dic['name'] = name
+            name += 1
             boxesCoo.append(dic)
         dic = {}
         dic['x'] = 0
