@@ -51,30 +51,52 @@ def main():
     col2 = '#a0a0ff'  # color of waterway length
     col3 = '#ABFF7F'
     col4 = '#FFEF85'
-    fsz = 3
+    fsz = 5
     fig = plt.figure(figsize=(10, 10), facecolor='w', dpi=150)
     plt.rcParams["font.size"] = fsz
 
     plt.subplot(211)
-    plt.yticks(xx, namesS) 
+    plt.yticks(xx[:16], namesS) 
     plt.xlim(0, 25000)
-    plt.ylim(0, len(xx) + 1)
+    plt.ylim(0, len(xx[:16]) + 1)
     plt.ylabel('Site name')
     plt.ylabel('number')
     plt.grid(color='#999999', linestyle='--')
 
     # plt.barh([0], [0], color=col1, align='center', label='Dam height (m)')  # 凡例作成のためのダミー
-    
-    plt.barh(xx - 0.3, edgesS, height=0.20, color=col1, align='center', label='ST-GIB')
-    plt.barh(xx - 0.1, edgesC, height=0.20, color=col2, align='center', label='CD-GIB')
-    plt.barh(xx + 0.1, edgesF, height=0.20, color=col3, align='center', label='FD-GIB')
-    plt.barh(xx + 0.3, edgesT, height=0.20, color=col4, align='center', label='TR-GIB')
-
+    plt.barh(xx[:16] + 0.3, edgesS[:16], height=0.20, color=col1, align='center', label='ST-GIB')
+    plt.barh(xx[:16] + 0.1, edgesC[:16], height=0.20, color=col2, align='center', label='CD-GIB')
+    plt.barh(xx[:16] - 0.1, edgesF[:16], height=0.20, color=col3, align='center', label='FD-GIB')
+    plt.barh(xx[:16] - 0.3, edgesT[:16], height=0.20, color=col4, align='center', label='TR-GIB')
 
     plt.legend(shadow=True, loc='upper right')
-    plt.title('Case: 1800MW x 8hr', loc='left', fontsize=fsz - 1)
-
+    plt.title('The number of edge crossings', loc='center', fontsize=fsz + 4)
     plt.show(fig)
+
+    fig = plt.figure(figsize=(10, 10), facecolor='w', dpi=150)
+    plt.rcParams["font.size"] = fsz
+
+    plt.subplot(211)
+    plt.yticks(xx[:16], namesS[16:]) 
+    plt.xlim(0, 12000)
+    plt.ylim(0, len(xx[16:]) + 1)
+    plt.ylabel('Site name')
+    plt.ylabel('number')
+    plt.grid(color='#999999', linestyle='--')
+
+    # plt.barh([0], [0], color=col1, align='center', label='Dam height (m)')  # 凡例作成のためのダミー
+    plt.barh(xx[:16] + 0.3, edgesS[16:], height=0.20, color=col1, align='center', label='ST-GIB')
+    plt.barh(xx[:16] + 0.1, edgesC[16:], height=0.20, color=col2, align='center', label='CD-GIB')
+    plt.barh(xx[:16] - 0.1, edgesF[16:], height=0.20, color=col3, align='center', label='FD-GIB')
+    plt.barh(xx[:16] -
+     0.3, edgesT[16:], height=0.20, color=col4, align='center', label='TR-GIB')
+
+    plt.legend(shadow=True, loc='upper right')
+    plt.title('The number of edge crossings', loc='center', fontsize=fsz + 4)
+    plt.show(fig)
+
+    print(len(xx))
+
     a = input()
 
 if __name__ == '__main__':
