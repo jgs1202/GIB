@@ -1,7 +1,7 @@
 import os
 import json
 from setAnswer import calc
-import
+import math
 
 def arrange():
     pathes = []
