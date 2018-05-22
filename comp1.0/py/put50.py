@@ -17,13 +17,14 @@ def arrange():
     num = 0
 
     for path in pathes:
-        if os.path.exists(path + str(num) + '.json'):
-            count += 1
-        else:
-            print(num)
-        num += 1
-        if count != 0 and count % 50 == 0:
-            num = 60 * (floor( num / 60) + 1)
+        while count < 1600:
+            if os.path.exists(path + str(num) + '.json'):
+                count += 1
+            else:
+                print(num)
+            num += 1
+            if count != 0 and count % 50 == 0:
+                num = 60 * (floor( num / 60) + 1)
 
     
 
