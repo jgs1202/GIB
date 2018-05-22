@@ -1,6 +1,7 @@
 import os
 import json
 from setAnswer import calc
+import
 
 def arrange():
     pathes = []
@@ -24,7 +25,7 @@ def arrange():
                 print(num)
             num += 1
             if count != 0 and count % 50 == 0:
-                num = 60 * (floor( num / 60) + 1)
+                num = 60 * (math.floor(num / 60) + 1)
 
     
 
